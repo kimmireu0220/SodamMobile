@@ -22,7 +22,8 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  StatusBar
+  StatusBar,
+  Image
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -54,7 +55,11 @@ const Splash: React.FC<SplashProps> = ({ onStart }) => {
       <View style={styles.content}>
         {/* 로고 */}
         <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>소담</Text>
+          <Image
+            source={require('../assets/sodam-logo.png')}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
           <Text style={styles.logoSubtext}>
             손으로 전하는 소중한 이야기
           </Text>
@@ -90,13 +95,11 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    gap: 20,
+    gap: 0,
   },
-  logoText: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: '#2E7D32',
-    textAlign: 'center',
+  logoImage: {
+    width: 400,
+    height: 180,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
