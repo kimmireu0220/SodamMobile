@@ -34,23 +34,38 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types/navigation';
 import AppLayout from '../components/AppLayout';
 import StatisticsSection from '../components/StatisticsSection';
 import CustomPhrasesSection from '../components/CustomPhrasesSection';
+
+type MyPageScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
 interface MyPageProps {
   onNavigate?: (path: string) => void;
 }
 
 const MyPage: React.FC<MyPageProps> = ({ onNavigate }) => {
+  const navigation = useNavigation<MyPageScreenNavigationProp>();
   const [activeTab, setActiveTab] = useState<'stats' | 'phrases'>('stats');
 
   const handleMenuClick = () => {
     if (onNavigate) onNavigate('/about');
   };
 
+  const handleLogoClick = () => {
+    // 홈으로 이동
+    if (onNavigate) {
+      onNavigate('/');
+    } else {
+      navigation.navigate('Main', { screen: 'Home' });
+    }
+  };
+
   return (
-    <AppLayout onMenuClick={handleMenuClick}>
+    <AppLayout onMenuClick={handleMenuClick} onLogoClick={handleLogoClick}>
       <View style={styles.content}>
         {/* 환영 메시지 */}
         <View style={styles.welcomeSection}>

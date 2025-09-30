@@ -26,15 +26,21 @@ import {
   Alert,
   Image
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types/navigation';
 import AppLayout from '../components/AppLayout';
 import QuickPhrases from '../components/QuickPhrases';
 import BigTextCard from '../components/BigTextCard';
+
+type SpeakScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
 interface SpeakProps {
   onNavigate?: (path: string) => void;
 }
 
 const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
+  const navigation = useNavigation<SpeakScreenNavigationProp>();
   const [text, setText] = useState('');
   const [showModal, setShowModal] = useState(false);
 
@@ -52,6 +58,15 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
 
   const handleMenuClick = () => {
     if (onNavigate) onNavigate('/about');
+  };
+
+  const handleLogoClick = () => {
+    // 홈으로 이동
+    if (onNavigate) {
+      onNavigate('/');
+    } else {
+      navigation.navigate('Main', { screen: 'Home' });
+    }
   };
 
   const handleCloseModal = () => {
@@ -73,7 +88,7 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <AppLayout onMenuClick={handleMenuClick}>
+    <AppLayout onMenuClick={handleMenuClick} onLogoClick={handleLogoClick}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 제목 */}
         <View style={styles.titleSection}>

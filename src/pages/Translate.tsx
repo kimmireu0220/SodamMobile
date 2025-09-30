@@ -23,6 +23,9 @@ import {
   StyleSheet,
   ScrollView
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types/navigation';
 import AppLayout from '../components/AppLayout';
 import AvatarCard from '../components/AvatarCard';
 import MicButton from '../components/MicButton';
@@ -30,11 +33,14 @@ import TurnLight from '../components/TurnLight';
 import SpeechBubble from '../components/SpeechBubble';
 import KSLResultCard from '../components/KSLResultCard';
 
+type TranslateScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
+
 interface TranslateProps {
   onNavigate?: (path: string) => void;
 }
 
 const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
+  const navigation = useNavigation<TranslateScreenNavigationProp>();
   const [status, setStatus] = useState<'idle' | 'listening' | 'analyzing' | 'converting' | 'signing' | 'ready'>('idle');
   const [transcript, setTranscript] = useState('');
   const [kslResult, setKslResult] = useState<{ gloss: string; confidence: number } | null>(null);
@@ -86,8 +92,17 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
     if (onNavigate) onNavigate('/about');
   };
 
+  const handleLogoClick = () => {
+    // 홈으로 이동
+    if (onNavigate) {
+      onNavigate('/');
+    } else {
+      navigation.navigate('Main', { screen: 'Home' });
+    }
+  };
+
   return (
-    <AppLayout onMenuClick={handleMenuClick}>
+    <AppLayout onMenuClick={handleMenuClick} onLogoClick={handleLogoClick}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 곰돌이의 말풍선 - 공간은 항상 확보 */}
         <View style={{ marginTop: 20, minHeight: 60 }}>
