@@ -66,14 +66,6 @@ const MyPage: React.FC<MyPageProps> = ({ onNavigate }) => {
           </Text>
         </View>
 
-        {/* 곰 캐릭터 */}
-        <View style={styles.characterSection}>
-          <Image
-            source={require('../assets/bear-new.png')}
-            style={styles.characterImage}
-            resizeMode="contain"
-          />
-        </View>
 
         {/* 탭 네비게이션 */}
         <View style={styles.tabContainer}>
@@ -149,14 +141,6 @@ const styles = StyleSheet.create({
     color: '#666666',
     textAlign: 'center',
     lineHeight: 24,
-  },
-  characterSection: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  characterImage: {
-    width: 80,
-    height: 80,
   },
   tabContainer: {
     flexDirection: 'row',

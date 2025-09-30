@@ -21,9 +21,9 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
-  SafeAreaView
+  ScrollView
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../components/Header';
 import AvatarCard from '../components/AvatarCard';
 import MicButton from '../components/MicButton';
@@ -93,19 +93,20 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
       <Header onMenuClick={handleMenuClick} />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* 곰돌이의 말풍선 - 공간은 항상 확보 */}
+        <View style={{ marginTop: 20, minHeight: 60 }}>
+          {status === 'ready' && (
+            <SpeechBubble message={'수화 변환이 완료되었습니다!'} />
+          )}
+        </View>
+
         {/* 곰 캐릭터 */}
         <AvatarCard 
           status={status} 
-          message={status === 'ready' ? '수화 변환이 완료되었습니다!' : undefined}
         />
 
-        {/* 상태 표시 */}
-        <TurnLight status={status} />
-
-        {/* 말풍선 */}
-        {transcript && (
-          <SpeechBubble message={transcript} />
-        )}
+        {/* 상태 표시 - ready 상태가 아닐 때만 표시 */}
+        {status !== 'ready' && <TurnLight status={status} />}
 
         {/* KSL 변환 결과 */}
         {kslResult && (
@@ -123,17 +124,6 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
           />
         </View>
 
-        {/* 사용 안내 */}
-        <View style={styles.guideContainer}>
-          <Text style={styles.guideTitle}>
-            사용 방법
-          </Text>
-          <Text style={styles.guideText}>
-            • 마이크 버튼을 눌러 음성을 인식하세요{'\n'}
-            • 명확하고 천천히 말씀해 주세요{'\n'}
-            • 조용한 환경에서 사용하세요
-          </Text>
-        </View>
           </ScrollView>
         </SafeAreaView>
   );
@@ -142,40 +132,17 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f5f7fa',
   },
   content: {
     flex: 1,
-    paddingBottom: 80, // 하단 네비게이션 공간
+    paddingBottom: 100, // 하단 네비게이션 공간
   },
   micContainer: {
     alignItems: 'center',
-    paddingVertical: 20,
-  },
-  guideContainer: {
-    backgroundColor: '#ffffff',
-    margin: 16,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  guideTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333333',
-    marginBottom: 8,
-  },
-  guideText: {
-    fontSize: 14,
-    color: '#666666',
-    lineHeight: 20,
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+    marginTop: 20,
   },
 });
 

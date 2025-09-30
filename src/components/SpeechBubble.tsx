@@ -18,19 +18,22 @@ import React from 'react';
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  StyleProp,
+  ViewStyle
 } from 'react-native';
 
 interface SpeechBubbleProps {
   message: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-const SpeechBubble: React.FC<SpeechBubbleProps> = ({ message }) => {
+const SpeechBubble: React.FC<SpeechBubbleProps> = ({ message, style }) => {
   if (!message) return null;
 
   return (
     <View
-      style={styles.container}
+      style={[styles.container, style]}
       accessibilityLiveRegion="polite"
       accessibilityLabel={`곰돌이가 말하는 내용: ${message}`}
     >
@@ -49,52 +52,35 @@ const SpeechBubble: React.FC<SpeechBubbleProps> = ({ message }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 0,
+    marginHorizontal: 20,
+    marginBottom: 8,
     alignItems: 'center',
   },
   bubble: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 12,
-    padding: 16,
-    maxWidth: 280,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    padding: 12,
+    maxWidth: 300,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
   },
   message: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#333333',
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#666666',
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 22,
   },
   tail: {
     position: 'absolute',
-    bottom: -8,
+    bottom: -6,
     width: 0,
     height: 0,
-    borderLeftWidth: 8,
-    borderRightWidth: 8,
-    borderTopWidth: 8,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderTopWidth: 6,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderTopColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    borderTopColor: '#f8f9fa',
   },
 });
 

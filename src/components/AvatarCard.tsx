@@ -107,28 +107,33 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     alignItems: 'center',
-    gap: 20,
-    padding: 24,
+    gap: 24,
+    padding: 40,
     backgroundColor: '#ffffff',
-    borderRadius: 12,
-    margin: 16,
+    borderRadius: 16,
+    margin: 20,
+    marginBottom: 20,
+    minHeight: 280,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 5,
     position: 'relative',
   },
   statusIcon: {
     position: 'absolute',
-    top: 16,
-    right: 16,
+    top: 12,
+    right: 12,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 20,
+    padding: 4,
   },
   statusIconText: {
-    fontSize: 32,
+    fontSize: 24,
   },
   bounceAnimation: {
     // React Native에서는 Animated API를 사용해야 함
@@ -137,24 +142,30 @@ const styles = StyleSheet.create({
   avatarContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 24,
+    minHeight: 200,
   },
   shakeAnimation: {
     // React Native에서는 Animated API를 사용해야 함
     // 현재는 정적 스타일로 구현
   },
   bearImage: {
-    width: 80,
-    height: 80,
+    width: 160,
+    height: 160,
   },
   idleStyle: {
-    opacity: 0.8,
+    opacity: 0.9,
   },
   message: {
     fontSize: 16,
     color: '#2E7D32',
     textAlign: 'center',
     marginTop: 8,
-    fontWeight: '500',
+    fontWeight: '600',
+    backgroundColor: '#f0f8f0',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
 });
 

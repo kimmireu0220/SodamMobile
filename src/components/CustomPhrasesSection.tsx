@@ -36,23 +36,18 @@ import {
 interface CustomPhrase {
   id: string;
   text: string;
-  category: string;
   isFavorite: boolean;
   usageCount: number;
   createdAt: string;
 }
 
-const CATEGORIES = ['전체', '업무', '일상', '긴급'];
-
 const CustomPhrasesSection: React.FC = () => {
   const [phrases, setPhrases] = useState<CustomPhrase[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('전체');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingPhrase, setEditingPhrase] = useState<CustomPhrase | null>(null);
   const [newPhrase, setNewPhrase] = useState('');
-  const [newCategory, setNewCategory] = useState('일상');
 
   useEffect(() => {
     // TODO: AsyncStorage에서 데이터 로드
@@ -61,7 +56,6 @@ const CustomPhrasesSection: React.FC = () => {
       {
         id: '1',
         text: '안녕하세요',
-        category: '일상',
         isFavorite: true,
         usageCount: 15,
         createdAt: '2024-01-01'
@@ -69,7 +63,6 @@ const CustomPhrasesSection: React.FC = () => {
       {
         id: '2',
         text: '감사합니다',
-        category: '일상',
         isFavorite: true,
         usageCount: 12,
         createdAt: '2024-01-02'
@@ -77,7 +70,6 @@ const CustomPhrasesSection: React.FC = () => {
       {
         id: '3',
         text: '회의실은 어디인가요?',
-        category: '업무',
         isFavorite: false,
         usageCount: 8,
         createdAt: '2024-01-03'
@@ -91,9 +83,6 @@ const CustomPhrasesSection: React.FC = () => {
   }, []);
 
   const filteredPhrases = phrases.filter(phrase => {
-    if (selectedCategory !== '전체' && phrase.category !== selectedCategory) {
-      return false;
-    }
     if (showFavoritesOnly && !phrase.isFavorite) {
       return false;
     }
@@ -113,7 +102,6 @@ const CustomPhrasesSection: React.FC = () => {
     const phrase: CustomPhrase = {
       id: Date.now().toString(),
       text: newPhrase.trim(),
-      category: newCategory,
       isFavorite: false,
       usageCount: 0,
       createdAt: new Date().toISOString().split('T')[0]
@@ -121,14 +109,12 @@ const CustomPhrasesSection: React.FC = () => {
 
     setPhrases([...phrases, phrase]);
     setNewPhrase('');
-    setNewCategory('일상');
     setShowModal(false);
   };
 
   const handleEditPhrase = (phrase: CustomPhrase) => {
     setEditingPhrase(phrase);
     setNewPhrase(phrase.text);
-    setNewCategory(phrase.category);
     setShowModal(true);
   };
 
@@ -140,13 +126,12 @@ const CustomPhrasesSection: React.FC = () => {
 
     setPhrases(phrases.map(p => 
       p.id === editingPhrase.id 
-        ? { ...p, text: newPhrase.trim(), category: newCategory }
+        ? { ...p, text: newPhrase.trim() }
         : p
     ));
 
     setEditingPhrase(null);
     setNewPhrase('');
-    setNewCategory('일상');
     setShowModal(false);
   };
 
@@ -192,27 +177,6 @@ const CustomPhrasesSection: React.FC = () => {
           <Text style={styles.addButtonText}>+ 추가</Text>
         </TouchableOpacity>
 
-        <View style={styles.filters}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {CATEGORIES.map(category => (
-              <TouchableOpacity
-                key={category}
-                style={[
-                  styles.filterButton,
-                  selectedCategory === category && styles.filterButtonActive
-                ]}
-                onPress={() => setSelectedCategory(category)}
-              >
-                <Text style={[
-                  styles.filterButtonText,
-                  selectedCategory === category && styles.filterButtonTextActive
-                ]}>
-                  {category}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
 
         <TouchableOpacity
           style={[
@@ -234,7 +198,6 @@ const CustomPhrasesSection: React.FC = () => {
             <View style={styles.phraseContent}>
               <Text style={styles.phraseText}>{phrase.text}</Text>
               <View style={styles.phraseMeta}>
-                <Text style={styles.phraseCategory}>{phrase.category}</Text>
                 <Text style={styles.phraseUsage}>{phrase.usageCount}회 사용</Text>
               </View>
             </View>
@@ -288,28 +251,6 @@ const CustomPhrasesSection: React.FC = () => {
               multiline
             />
             
-            <View style={styles.categoryContainer}>
-              <Text style={styles.categoryLabel}>카테고리:</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {CATEGORIES.filter(cat => cat !== '전체').map(category => (
-                  <TouchableOpacity
-                    key={category}
-                    style={[
-                      styles.categoryButton,
-                      newCategory === category && styles.categoryButtonActive
-                    ]}
-                    onPress={() => setNewCategory(category)}
-                  >
-                    <Text style={[
-                      styles.categoryButtonText,
-                      newCategory === category && styles.categoryButtonTextActive
-                    ]}>
-                      {category}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
             
             <View style={styles.modalActions}>
               <TouchableOpacity
@@ -318,7 +259,6 @@ const CustomPhrasesSection: React.FC = () => {
                   setShowModal(false);
                   setEditingPhrase(null);
                   setNewPhrase('');
-                  setNewCategory('일상');
                 }}
               >
                 <Text style={styles.cancelButtonText}>취소</Text>
@@ -374,27 +314,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: '600',
   },
-  filters: {
-    flex: 1,
-    marginRight: 12,
-  },
-  filterButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: '#f0f0f0',
-    marginRight: 8,
-  },
-  filterButtonActive: {
-    backgroundColor: '#2E7D32',
-  },
-  filterButtonText: {
-    color: '#666666',
-    fontSize: 14,
-  },
-  filterButtonTextActive: {
-    color: '#ffffff',
-  },
   favoriteButton: {
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -430,15 +349,6 @@ const styles = StyleSheet.create({
   phraseMeta: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  phraseCategory: {
-    fontSize: 12,
-    color: '#666666',
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-    marginRight: 8,
   },
   phraseUsage: {
     fontSize: 12,
@@ -484,31 +394,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     minHeight: 80,
     textAlignVertical: 'top',
-  },
-  categoryContainer: {
-    marginBottom: 20,
-  },
-  categoryLabel: {
-    fontSize: 14,
-    color: '#666666',
-    marginBottom: 8,
-  },
-  categoryButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: '#f0f0f0',
-    marginRight: 8,
-  },
-  categoryButtonActive: {
-    backgroundColor: '#2E7D32',
-  },
-  categoryButtonText: {
-    color: '#666666',
-    fontSize: 14,
-  },
-  categoryButtonTextActive: {
-    color: '#ffffff',
   },
   modalActions: {
     flexDirection: 'row',
