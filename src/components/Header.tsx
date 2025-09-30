@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
     paddingVertical: Spacing.md,
     backgroundColor: Colors.surface,
     ...getShadowStyle('md'),
@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
   logoButton: {
     padding: 0,
     paddingLeft: 0,
+    marginLeft: -20,
+    marginRight: 0,
     borderRadius: Spacing.radius.md,
   },
   logoImage: {

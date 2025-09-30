@@ -4,6 +4,7 @@
  */
 import { useNavigation as useRNNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { RootStackParamList, MainTabParamList } from '../types/navigation';
 
 export const useAppNavigation = () => {
   const navigation = useRNNavigation();
@@ -12,20 +13,23 @@ export const useAppNavigation = () => {
     // 경로에 따라 적절한 네비게이션 메서드 호출
     switch (path) {
       case '/home':
-        navigation.navigate('Main', { screen: 'Home' });
+        (navigation as any).navigate('Main', { screen: 'Home' });
         break;
       case '/translate':
-        navigation.navigate('Main', { screen: 'Translate' });
+        (navigation as any).navigate('Main', { screen: 'Translate' });
+        break;
+      case '/speak':
+        (navigation as any).navigate('Main', { screen: 'Speak' });
         break;
       case '/mypage':
-        navigation.navigate('Main', { screen: 'MyPage' });
+        (navigation as any).navigate('Main', { screen: 'MyPage' });
         break;
       case '/about':
         // About은 별도 스택으로 처리
-        navigation.navigate('About');
+        (navigation as any).navigate('About');
         break;
       case '/splash':
-        navigation.navigate('Splash');
+        (navigation as any).navigate('Splash');
         break;
       default:
         console.warn(`Unknown path: ${path}`);
@@ -39,7 +43,7 @@ export const useAppNavigation = () => {
   }, [navigation]);
 
   const reset = useCallback((path: string) => {
-    navigation.reset({
+    (navigation as any).reset({
       index: 0,
       routes: [{ name: path as any }],
     });
@@ -49,7 +53,7 @@ export const useAppNavigation = () => {
     navigate,
     goBack,
     reset,
-    currentPath: navigation.getState()?.routes[navigation.getState()?.index || 0]?.name || '/splash',
+    currentPath: (navigation as any).getState()?.routes[(navigation as any).getState()?.index || 0]?.name || '/splash',
   };
 };
 

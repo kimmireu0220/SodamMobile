@@ -25,11 +25,10 @@ import {
   ScrollView,
   Image
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
-import Header from '../components/Header';
+import AppLayout from '../components/AppLayout';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -57,7 +56,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       if (path === '/translate') {
         navigation.navigate('Main', { screen: 'Translate' });
       } else if (path === '/speak') {
-        navigation.navigate('Main', { screen: 'Translate' }); // Speak은 Translate 탭으로 이동
+        navigation.navigate('Main', { screen: 'Speak' }); // Speak 탭으로 이동
       } else if (path === '/mypage') {
         navigation.navigate('Main', { screen: 'MyPage' });
       }
@@ -92,10 +91,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* 헤더 */}
-      <Header onMenuClick={handleMenuClick} />
-
+    <AppLayout onMenuClick={handleMenuClick}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 환영 메시지 */}
         <View style={styles.welcomeSection}>
@@ -152,15 +148,11 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-  },
   content: {
     flex: 1,
     paddingBottom: 80, // 하단 네비게이션 공간

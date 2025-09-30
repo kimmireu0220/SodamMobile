@@ -11,6 +11,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Splash from '../pages/Splash';
 import Home from '../pages/Home';
 import Translate from '../pages/Translate';
+import Speak from '../pages/Speak';
 import MyPage from '../pages/MyPage';
 
 // 타입 정의
@@ -62,6 +63,19 @@ const MainTabNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Image 
               source={require('../assets/sign-language-icon.png')} 
+              style={{ width: size, height: size, tintColor: color }}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Speak"
+        component={Speak}
+        options={{
+          tabBarLabel: '텍스트로 말하기',
+          tabBarIcon: ({ color, size }) => (
+            <Image 
+              source={require('../assets/translate-icon.png')} 
               style={{ width: size, height: size, tintColor: color }}
             />
           ),

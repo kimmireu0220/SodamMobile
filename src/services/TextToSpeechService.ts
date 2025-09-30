@@ -48,8 +48,9 @@ class TextToSpeechService {
       Tts.addEventListener('tts-start', this.onStart.bind(this));
       Tts.addEventListener('tts-finish', this.onFinish.bind(this));
       Tts.addEventListener('tts-cancel', this.onStop.bind(this));
-      Tts.addEventListener('tts-pause', this.onPause.bind(this));
-      Tts.addEventListener('tts-resume', this.onResume.bind(this));
+      // react-native-tts에서 pause/resume 이벤트는 지원하지 않음
+      // Tts.addEventListener('tts-pause', this.onPause.bind(this));
+      // Tts.addEventListener('tts-resume', this.onResume.bind(this));
       Tts.addEventListener('tts-progress', this.onProgress.bind(this));
       Tts.addEventListener('tts-error', this.onError.bind(this));
       
@@ -128,9 +129,10 @@ class TextToSpeechService {
       if (options.pitch !== undefined) {
         await Tts.setDefaultPitch(options.pitch);
       }
-      if (options.volume !== undefined) {
-        await Tts.setDefaultVolume(options.volume);
-      }
+      // Volume 설정은 react-native-tts에서 지원하지 않음
+      // if (options.volume !== undefined) {
+      //   await Tts.setDefaultVolume(options.volume);
+      // }
       if (options.language) {
         await Tts.setDefaultLanguage(options.language);
       }
@@ -146,11 +148,12 @@ class TextToSpeechService {
   }
 
   /**
-   * 현재 재생 중인 음성 일시정지
+   * 현재 재생 중인 음성 일시정지 (react-native-tts에서 지원하지 않음)
    */
   async pause(): Promise<boolean> {
     try {
-      await Tts.pause();
+      // react-native-tts에서는 pause 기능을 지원하지 않으므로 stop으로 대체
+      await Tts.stop();
       return true;
     } catch (error) {
       console.error('Failed to pause TTS:', error);
@@ -159,12 +162,13 @@ class TextToSpeechService {
   }
 
   /**
-   * 일시정지된 음성 재개
+   * 일시정지된 음성 재개 (react-native-tts에서 지원하지 않음)
    */
   async resume(): Promise<boolean> {
     try {
-      await Tts.resume();
-      return true;
+      // react-native-tts에서는 resume 기능을 지원하지 않음
+      console.warn('Resume functionality not supported in react-native-tts');
+      return false;
     } catch (error) {
       console.error('Failed to resume TTS:', error);
       return false;

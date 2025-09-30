@@ -98,7 +98,11 @@ const StatisticsSection: React.FC = () => {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView 
+      style={styles.container} 
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={styles.title}>사용 통계</Text>
       
       {/* 통계 카드들 */}
@@ -161,6 +165,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+  },
+  contentContainer: {
+    paddingBottom: 100, // 하단 네비게이션 공간 확보
   },
   loadingContainer: {
     flex: 1,

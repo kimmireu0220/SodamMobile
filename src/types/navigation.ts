@@ -5,11 +5,13 @@
 export type RootStackParamList = {
   Splash: undefined;
   Main: undefined;
+  About: undefined;
 };
 
 export type MainTabParamList = {
   Home: undefined;
   Translate: undefined;
+  Speak: undefined;
   MyPage: undefined;
 };
 

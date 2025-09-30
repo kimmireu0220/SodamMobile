@@ -192,7 +192,10 @@ const CustomPhrasesSection: React.FC = () => {
       </View>
 
       {/* 상용구 목록 */}
-      <ScrollView style={styles.list}>
+      <ScrollView 
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+      >
         {sortedPhrases.map(phrase => (
           <View key={phrase.id} style={styles.phraseItem}>
             <View style={styles.phraseContent}>
@@ -329,6 +332,9 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
+  },
+  listContent: {
+    paddingBottom: 100, // 하단 네비게이션 공간 확보
   },
   phraseItem: {
     flexDirection: 'row',

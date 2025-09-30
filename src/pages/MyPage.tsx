@@ -31,11 +31,10 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
   Image
 } from 'react-native';
-import Header from '../components/Header';
+import AppLayout from '../components/AppLayout';
 import StatisticsSection from '../components/StatisticsSection';
 import CustomPhrasesSection from '../components/CustomPhrasesSection';
 
@@ -51,11 +50,8 @@ const MyPage: React.FC<MyPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* 헤더 */}
-      <Header onMenuClick={handleMenuClick} />
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+    <AppLayout onMenuClick={handleMenuClick}>
+      <View style={styles.content}>
         {/* 환영 메시지 */}
         <View style={styles.welcomeSection}>
           <Text style={styles.welcomeTitle}>
@@ -65,7 +61,6 @@ const MyPage: React.FC<MyPageProps> = ({ onNavigate }) => {
             사용 통계와 개인 상용구를 관리해보세요
           </Text>
         </View>
-
 
         {/* 탭 네비게이션 */}
         <View style={styles.tabContainer}>
@@ -104,25 +99,22 @@ const MyPage: React.FC<MyPageProps> = ({ onNavigate }) => {
           </TouchableOpacity>
         </View>
 
-        {/* 탭 콘텐츠 */}
-        {activeTab === 'stats' ? (
-          <StatisticsSection />
-        ) : (
-          <CustomPhrasesSection />
-        )}
-        </ScrollView>
-      </SafeAreaView>
+        {/* 탭 콘텐츠 - 각 섹션이 자체 ScrollView를 가짐 */}
+        <View style={styles.tabContent}>
+          {activeTab === 'stats' ? (
+            <StatisticsSection />
+          ) : (
+            <CustomPhrasesSection />
+          )}
+        </View>
+      </View>
+    </AppLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-  },
   content: {
     flex: 1,
-    paddingBottom: 80, // 하단 네비게이션 공간
   },
   welcomeSection: {
     alignItems: 'center',
@@ -174,6 +166,9 @@ const styles = StyleSheet.create({
   },
   tabButtonTextActive: {
     color: '#ffffff',
+  },
+  tabContent: {
+    flex: 1,
   },
 });
 

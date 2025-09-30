@@ -23,11 +23,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
   Alert,
   Image
 } from 'react-native';
-import Header from '../components/Header';
+import AppLayout from '../components/AppLayout';
 import QuickPhrases from '../components/QuickPhrases';
 import BigTextCard from '../components/BigTextCard';
 
@@ -74,10 +73,7 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* 헤더 */}
-      <Header onMenuClick={handleMenuClick} />
-
+    <AppLayout onMenuClick={handleMenuClick}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 제목 */}
         <View style={styles.titleSection}>
@@ -145,15 +141,11 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
         onClose={handleCloseModal}
       />
 
-    </SafeAreaView>
+    </AppLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-  },
   content: {
     flex: 1,
     paddingBottom: 80, // 하단 네비게이션 공간

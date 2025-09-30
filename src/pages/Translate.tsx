@@ -23,8 +23,7 @@ import {
   StyleSheet,
   ScrollView
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Header from '../components/Header';
+import AppLayout from '../components/AppLayout';
 import AvatarCard from '../components/AvatarCard';
 import MicButton from '../components/MicButton';
 import TurnLight from '../components/TurnLight';
@@ -88,10 +87,7 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* 헤더 */}
-      <Header onMenuClick={handleMenuClick} />
-
+    <AppLayout onMenuClick={handleMenuClick}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 곰돌이의 말풍선 - 공간은 항상 확보 */}
         <View style={{ marginTop: 20, minHeight: 60 }}>
@@ -125,15 +121,11 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
         </View>
 
           </ScrollView>
-        </SafeAreaView>
+    </AppLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f7fa',
-  },
   content: {
     flex: 1,
     paddingBottom: 100, // 하단 네비게이션 공간

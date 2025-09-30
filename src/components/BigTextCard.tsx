@@ -18,7 +18,7 @@
  * - TTS 기능 연동
  * - 텍스트 크기 조절 기능
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -28,6 +28,7 @@ import {
   SafeAreaView,
   ScrollView
 } from 'react-native';
+import nativeTTSService from '../services/NativeTTSService';
 
 interface BigTextCardProps {
   text: string;
@@ -38,9 +39,47 @@ interface BigTextCardProps {
 const BigTextCard: React.FC<BigTextCardProps> = ({ text, isVisible, onClose }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const handleSpeakClick = () => {
-    // TODO: TTS 기능 구현
-    setIsPlaying(!isPlaying);
+  // TTS 상태 확인
+  useEffect(() => {
+    const checkPlayingState = () => {
+      setIsPlaying(nativeTTSService.getPlayingState());
+    };
+
+    // 주기적으로 재생 상태 확인
+    const interval = setInterval(checkPlayingState, 500);
+
+    return () => {
+      clearInterval(interval);
+      // 컴포넌트 언마운트 시 TTS 중지
+      if (isPlaying) {
+        nativeTTSService.stop();
+      }
+    };
+  }, [isPlaying]);
+
+  // 모달이 닫힐 때 음성 중지
+  useEffect(() => {
+    if (!isVisible && isPlaying) {
+      nativeTTSService.stop();
+    }
+  }, [isVisible, isPlaying]);
+
+  const handleSpeakClick = async () => {
+    if (isPlaying) {
+      // 재생 중이면 중지
+      await nativeTTSService.stop();
+    } else {
+      // 재생 시작
+      const success = await nativeTTSService.speak(text, {
+        rate: 0.5,    // 속도 (조금 느리게)
+        pitch: 1.0,   // 피치 (기본)
+        language: 'ko-KR' // 한국어
+      });
+
+      if (!success) {
+        console.error('TTS 재생 실패');
+      }
+    }
   };
 
   if (!isVisible) return null;
