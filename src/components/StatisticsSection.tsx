@@ -26,8 +26,7 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
-  TouchableOpacity
+  ScrollView
 } from 'react-native';
 
 interface Statistics {

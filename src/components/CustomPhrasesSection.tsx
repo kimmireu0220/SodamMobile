@@ -43,18 +43,12 @@ interface CustomPhrase {
 }
 
 const CATEGORIES = ['전체', '업무', '일상', '긴급'];
-const SORT_OPTIONS = [
-  { value: 'usage', label: '사용 많은 순' },
-  { value: 'recent', label: '최근 추가 순' },
-  { value: 'alphabetical', label: '가나다 순' }
-];
 
 const CustomPhrasesSection: React.FC = () => {
   const [phrases, setPhrases] = useState<CustomPhrase[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [sortBy, setSortBy] = useState('usage');
   const [showModal, setShowModal] = useState(false);
   const [editingPhrase, setEditingPhrase] = useState<CustomPhrase | null>(null);
   const [newPhrase, setNewPhrase] = useState('');
@@ -107,16 +101,7 @@ const CustomPhrasesSection: React.FC = () => {
   });
 
   const sortedPhrases = [...filteredPhrases].sort((a, b) => {
-    switch (sortBy) {
-      case 'usage':
-        return b.usageCount - a.usageCount;
-      case 'recent':
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      case 'alphabetical':
-        return a.text.localeCompare(b.text);
-      default:
-        return 0;
-    }
+    return b.usageCount - a.usageCount;
   });
 
   const handleAddPhrase = () => {

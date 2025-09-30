@@ -22,8 +22,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
-  Alert
+  SafeAreaView
 } from 'react-native';
 import Header from '../components/Header';
 import BottomNav from '../components/BottomNav';
@@ -39,7 +38,6 @@ interface TranslateProps {
 
 const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
   const [status, setStatus] = useState<'idle' | 'listening' | 'analyzing' | 'ready'>('idle');
-  const [isProcessing, setIsProcessing] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [kslResult, setKslResult] = useState<{ gloss: string; confidence: number } | null>(null);
 

@@ -5,8 +5,7 @@ import React from 'react';
 import {
   View,
   Text,
-  StyleSheet,
-  ScrollView
+  StyleSheet
 } from 'react-native';
 
 interface KSLResult {

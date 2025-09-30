@@ -57,7 +57,6 @@ const TurnLight: React.FC<TurnLightProps> = ({ status }) => {
           { backgroundColor: statusInfo.color },
           isActive && styles.activeLight
         ]}
-        accessibilityRole="status"
         accessibilityLabel={statusInfo.text}
       />
       

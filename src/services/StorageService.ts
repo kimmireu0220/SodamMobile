@@ -11,10 +11,8 @@ import {
   UserStatistics,
   DailyUsage,
   TopPhrase,
-  CustomPhrase,
   KSLTranslation,
   AppSettings,
-  UserProfile,
   AppState
 } from '../types/data';
 
@@ -319,10 +317,12 @@ class StorageService {
    */
   async restore(backupData: string): Promise<boolean> {
     try {
-      const data = JSON.parse(backupData);
+      const data = JSON.parse(backupData) as Partial<DatabaseSchema>;
       
       for (const [key, value] of Object.entries(data)) {
-        await this.set(key as StorageKey, value);
+        if (value !== undefined) {
+          await this.set(key as StorageKey, value as StorageValue);
+        }
       }
 
       return true;

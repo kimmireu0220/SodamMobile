@@ -12,7 +12,6 @@ import Splash from '../pages/Splash';
 import Home from '../pages/Home';
 import Translate from '../pages/Translate';
 import MyPage from '../pages/MyPage';
-import About from '../pages/About';
 
 // 타입 정의
 import { RootStackParamList, MainTabParamList } from '../types/navigation';
@@ -103,21 +102,6 @@ const RootStackNavigator = () => {
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Main" component={MainTabNavigator} />
     </Stack.Navigator>
-  );
-};
-
-// About 페이지를 위한 별도 스택
-const AboutStack = createStackNavigator();
-
-const AboutStackNavigator = () => {
-  return (
-    <AboutStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <AboutStack.Screen name="About" component={About} />
-    </AboutStack.Navigator>
   );
 };
 

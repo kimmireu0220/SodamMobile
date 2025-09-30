@@ -1,7 +1,6 @@
 /**
  * StorageService 테스트
  */
-import { StorageService } from '../../services/StorageService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // AsyncStorage 모킹

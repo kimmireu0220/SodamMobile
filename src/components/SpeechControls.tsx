@@ -34,20 +34,17 @@ const SpeechControls: React.FC<SpeechControlsProps> = ({
     startListening,
     stopListening,
     cancelListening,
-    reset: resetSTT,
   } = useSpeechRecognition();
 
   // TTS 훅
   const {
     isPlaying,
     isPaused,
-    isStopped,
     error: ttsError,
     speak,
     pause,
     resume,
     stop,
-    reset: resetTTS,
   } = useTextToSpeech();
 
   // 초기화

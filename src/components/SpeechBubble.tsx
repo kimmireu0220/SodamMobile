@@ -18,8 +18,7 @@ import React from 'react';
 import {
   View,
   Text,
-  StyleSheet,
-  Animated
+  StyleSheet
 } from 'react-native';
 
 interface SpeechBubbleProps {

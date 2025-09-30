@@ -3,8 +3,7 @@
  */
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import App from '../../App';
+import App from '../../../App';
 
 // 네비게이션 모킹
 jest.mock('@react-navigation/native', () => ({

@@ -35,8 +35,8 @@ export const useSpeechRecognition = (): UseSpeechRecognitionReturn => {
   }, []);
 
   // 음성 인식 에러 처리
-  const handleError = useCallback((error: SpeechRecognitionError) => {
-    setError(error.error.message);
+  const handleError = useCallback((err: SpeechRecognitionError) => {
+    setError(err.error.message);
     setIsListening(false);
     setIsProcessing(false);
   }, []);
