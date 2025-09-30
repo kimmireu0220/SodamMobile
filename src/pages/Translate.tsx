@@ -25,7 +25,6 @@ import {
   SafeAreaView
 } from 'react-native';
 import Header from '../components/Header';
-import BottomNav from '../components/BottomNav';
 import AvatarCard from '../components/AvatarCard';
 import MicButton from '../components/MicButton';
 import TurnLight from '../components/TurnLight';
@@ -123,11 +122,8 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
             • 조용한 환경에서 사용하세요
           </Text>
         </View>
-      </ScrollView>
-
-      {/* 하단 네비게이션 */}
-      <BottomNav currentPath="/translate" onNavigate={onNavigate || (() => {})} />
-    </SafeAreaView>
+          </ScrollView>
+        </SafeAreaView>
   );
 };
 

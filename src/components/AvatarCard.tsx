@@ -19,7 +19,8 @@ import React from 'react';
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  Image
 } from 'react-native';
 
 interface AvatarCardProps {
@@ -41,7 +42,21 @@ const AvatarCard: React.FC<AvatarCardProps> = ({ status, message }) => {
     }
   };
 
+  const getBearImage = () => {
+    switch (status) {
+      case 'listening':
+        return require('../assets/bear-pointing.png');
+      case 'analyzing':
+        return require('../assets/bear-thinking.png');
+      case 'ready':
+        return require('../assets/bear-suggest.png');
+      default:
+        return require('../assets/bear-new.png');
+    }
+  };
+
   const statusIcon = getStatusIcon();
+  const bearImage = getBearImage();
 
   return (
     <View style={styles.container}>
@@ -62,12 +77,14 @@ const AvatarCard: React.FC<AvatarCardProps> = ({ status, message }) => {
         styles.avatarContainer,
         status === 'ready' && styles.shakeAnimation
       ]}>
-        <Text style={[
-          styles.bearEmoji,
-          status === 'idle' && styles.idleStyle
-        ]}>
-          🐻
-        </Text>
+        <Image
+          source={bearImage}
+          style={[
+            styles.bearImage,
+            status === 'idle' && styles.idleStyle
+          ]}
+          resizeMode="contain"
+        />
       </View>
 
       {/* 메시지 표시 (ready 상태에서만) */}
@@ -119,8 +136,9 @@ const styles = StyleSheet.create({
     // React Native에서는 Animated API를 사용해야 함
     // 현재는 정적 스타일로 구현
   },
-  bearEmoji: {
-    fontSize: 80,
+  bearImage: {
+    width: 80,
+    height: 80,
   },
   idleStyle: {
     opacity: 0.8,

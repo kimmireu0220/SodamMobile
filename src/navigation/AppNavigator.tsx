@@ -2,7 +2,7 @@
  * 메인 앱 네비게이션 컴포넌트
  */
 import React from 'react';
-import { Text } from 'react-native';
+import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -47,7 +47,10 @@ const MainTabNavigator = () => {
         options={{
           tabBarLabel: '홈',
           tabBarIcon: ({ color, size }) => (
-            <Text style={{ fontSize: size, color }}>🏠</Text>
+            <Image 
+              source={require('../assets/home-icon.png')} 
+              style={{ width: size, height: size, tintColor: color }}
+            />
           ),
         }}
       />
@@ -57,7 +60,10 @@ const MainTabNavigator = () => {
         options={{
           tabBarLabel: '수화 변환',
           tabBarIcon: ({ color, size }) => (
-            <Text style={{ fontSize: size, color }}>🤟</Text>
+            <Image 
+              source={require('../assets/sign-language-icon.png')} 
+              style={{ width: size, height: size, tintColor: color }}
+            />
           ),
         }}
       />
@@ -67,7 +73,10 @@ const MainTabNavigator = () => {
         options={{
           tabBarLabel: '마이페이지',
           tabBarIcon: ({ color, size }) => (
-            <Text style={{ fontSize: size, color }}>👤</Text>
+            <Image 
+              source={require('../assets/profile-icon.png')} 
+              style={{ width: size, height: size, tintColor: color }}
+            />
           ),
         }}
       />
@@ -99,8 +108,20 @@ const RootStackNavigator = () => {
         },
       }}
     >
-      <Stack.Screen name="Splash" component={Splash} />
-      <Stack.Screen name="Main" component={MainTabNavigator} />
+      <Stack.Screen 
+        name="Splash" 
+        component={Splash}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen 
+        name="Main" 
+        component={MainTabNavigator}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };

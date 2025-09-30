@@ -35,7 +35,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import Header from '../components/Header';
-import BottomNav from '../components/BottomNav';
 import StatisticsSection from '../components/StatisticsSection';
 import CustomPhrasesSection from '../components/CustomPhrasesSection';
 
@@ -116,11 +115,8 @@ const MyPage: React.FC<MyPageProps> = ({ onNavigate }) => {
         ) : (
           <CustomPhrasesSection />
         )}
-      </ScrollView>
-
-      {/* 하단 네비게이션 */}
-      <BottomNav currentPath="/mypage" onNavigate={onNavigate || (() => {})} />
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
   );
 };
 

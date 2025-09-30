@@ -27,7 +27,6 @@ import {
   Alert
 } from 'react-native';
 import Header from '../components/Header';
-import BottomNav from '../components/BottomNav';
 import QuickPhrases from '../components/QuickPhrases';
 import BigTextCard from '../components/BigTextCard';
 
@@ -143,8 +142,6 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
         onClose={handleCloseModal}
       />
 
-      {/* 하단 네비게이션 */}
-      <BottomNav currentPath="/speak" onNavigate={onNavigate || (() => {})} />
     </SafeAreaView>
   );
 };

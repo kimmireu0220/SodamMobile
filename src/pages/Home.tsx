@@ -23,22 +23,45 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  SafeAreaView
+  SafeAreaView,
+  Image
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types/navigation';
 import Header from '../components/Header';
-import BottomNav from '../components/BottomNav';
+
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
 interface HomeProps {
   onNavigate?: (path: string) => void;
 }
 
 const Home: React.FC<HomeProps> = ({ onNavigate }) => {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+
   const handleMenuClick = () => {
-    if (onNavigate) onNavigate('/about');
+    if (onNavigate) {
+      onNavigate('/about');
+    } else {
+      // React Navigation 사용
+      navigation.navigate('Main');
+    }
   };
 
   const handleCardClick = (path: string) => {
-    if (onNavigate) onNavigate(path);
+    if (onNavigate) {
+      onNavigate(path);
+    } else {
+      // React Navigation 사용 - 탭 네비게이션으로 이동
+      if (path === '/translate') {
+        navigation.navigate('Main', { screen: 'Translate' });
+      } else if (path === '/speak') {
+        navigation.navigate('Main', { screen: 'Translate' }); // Speak은 Translate 탭으로 이동
+      } else if (path === '/mypage') {
+        navigation.navigate('Main', { screen: 'MyPage' });
+      }
+    }
   };
 
   const cards = [
@@ -46,7 +69,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       title: '수화 변환',
       subtitle: '대화 듣기',
       description: '음성을 실시간으로 수화로 변환합니다',
-      icon: '🤟',
+      icon: require('../assets/sign-language-icon.png'),
       path: '/translate',
       color: '#2E7D32'
     },
@@ -54,7 +77,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       title: '텍스트로 말하기',
       subtitle: '직접 입력 + 상용구',
       description: '직접 입력 또는 상용구를 선택하여 음성으로 전달합니다',
-      icon: '✏️',
+      icon: require('../assets/translate-icon.png'),
       path: '/speak',
       color: '#FF9800'
     },
@@ -62,7 +85,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       title: '마이 페이지',
       subtitle: '사용 통계 + 개인 상용구',
       description: '사용 패턴을 확인하고 개인 상용구를 관리합니다',
-      icon: '👤',
+      icon: require('../assets/profile-icon.png'),
       path: '/mypage',
       color: '#2E7D32'
     }
@@ -86,9 +109,11 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
         {/* 곰 캐릭터 */}
         <View style={styles.characterSection}>
-          <Text style={styles.characterEmoji}>
-            🐻
-          </Text>
+          <Image
+            source={require('../assets/bear-new.png')}
+            style={styles.characterImage}
+            resizeMode="contain"
+          />
         </View>
 
         {/* 기능 카드들 */}
@@ -105,9 +130,11 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               accessibilityRole="button"
             >
               <View style={styles.cardHeader}>
-                <Text style={styles.cardIcon}>
-                  {card.icon}
-                </Text>
+                <Image 
+                  source={card.icon} 
+                  style={styles.cardIcon}
+                  resizeMode="contain"
+                />
                 <View style={styles.cardTitleContainer}>
                   <Text style={styles.cardTitle}>
                     {card.title}
@@ -125,9 +152,6 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           ))}
         </View>
       </ScrollView>
-
-      {/* 하단 네비게이션 */}
-      <BottomNav currentPath="/home" onNavigate={onNavigate || (() => {})} />
     </SafeAreaView>
   );
 };
@@ -163,8 +187,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  characterEmoji: {
-    fontSize: 100,
+  characterImage: {
+    width: 120,
+    height: 120,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -198,7 +223,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardIcon: {
-    fontSize: 32,
+    width: 32,
+    height: 32,
     marginRight: 16,
   },
   cardTitleContainer: {

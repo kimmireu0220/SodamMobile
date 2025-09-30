@@ -25,14 +25,26 @@ import {
   SafeAreaView,
   StatusBar
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types/navigation';
+
+type SplashScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Splash'>;
 
 interface SplashProps {
   onStart?: () => void;
 }
 
 const Splash: React.FC<SplashProps> = ({ onStart }) => {
+  const navigation = useNavigation<SplashScreenNavigationProp>();
+
   const handleStartClick = () => {
-    if (onStart) onStart();
+    if (onStart) {
+      onStart();
+    } else {
+      // 네비게이션으로 Main 화면으로 이동
+      navigation.navigate('Main');
+    }
   };
 
   return (
