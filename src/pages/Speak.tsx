@@ -24,7 +24,8 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
-  Alert
+  Alert,
+  Image
 } from 'react-native';
 import Header from '../components/Header';
 import QuickPhrases from '../components/QuickPhrases';
@@ -90,9 +91,11 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
 
         {/* 곰 캐릭터 */}
         <View style={styles.characterSection}>
-          <Text style={styles.characterEmoji}>
-            🐻
-          </Text>
+          <Image
+            source={require('../assets/bear-pointing.png')}
+            style={styles.characterImage}
+            resizeMode="contain"
+          />
         </View>
 
         {/* 텍스트 입력 */}
@@ -177,8 +180,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  characterEmoji: {
-    fontSize: 80,
+  characterImage: {
+    width: 80,
+    height: 80,
   },
   inputSection: {
     backgroundColor: '#ffffff',

@@ -36,7 +36,7 @@ interface TranslateProps {
 }
 
 const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
-  const [status, setStatus] = useState<'idle' | 'listening' | 'analyzing' | 'ready'>('idle');
+  const [status, setStatus] = useState<'idle' | 'listening' | 'analyzing' | 'converting' | 'signing' | 'ready'>('idle');
   const [transcript, setTranscript] = useState('');
   const [kslResult, setKslResult] = useState<{ gloss: string; confidence: number } | null>(null);
 
@@ -49,11 +49,17 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
           setStatus('analyzing');
           setTranscript('안녕하세요, 반갑습니다');
           setTimeout(() => {
-            setStatus('ready');
-            setKslResult({
-              gloss: '안녕 반갑다',
-              confidence: 0.85
-            });
+            setStatus('converting');
+            setTimeout(() => {
+              setStatus('signing');
+              setTimeout(() => {
+                setStatus('ready');
+                setKslResult({
+                  gloss: '안녕 반갑다',
+                  confidence: 0.85
+                });
+              }, 1000);
+            }, 1000);
           }, 2000);
         }, 3000);
         break;
@@ -61,6 +67,12 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
         setStatus('analyzing');
         break;
       case 'analyzing':
+        setStatus('converting');
+        break;
+      case 'converting':
+        setStatus('signing');
+        break;
+      case 'signing':
         setStatus('ready');
         break;
       case 'ready':

@@ -24,7 +24,7 @@ import {
 } from 'react-native';
 
 interface AvatarCardProps {
-  status: 'idle' | 'listening' | 'analyzing' | 'ready';
+  status: 'idle' | 'listening' | 'analyzing' | 'converting' | 'signing' | 'ready';
   message?: string;
 }
 
@@ -35,23 +35,29 @@ const AvatarCard: React.FC<AvatarCardProps> = ({ status, message }) => {
         return '👂';
       case 'analyzing':
         return '💭';
-      case 'ready':
+      case 'converting':
+        return '🔄';
+      case 'signing':
         return '🤟';
+      case 'ready':
+        return '✅';
       default:
         return null;
     }
   };
 
   const getBearImage = () => {
-    switch (status) {
-      case 'listening':
-        return require('../assets/bear-pointing.png');
-      case 'analyzing':
-        return require('../assets/bear-thinking.png');
-      case 'ready':
-        return require('../assets/bear-suggest.png');
-      default:
-        return require('../assets/bear-new.png');
+    // Sodam-main과 정확히 동일한 로직
+    if (status === 'ready') {
+      return require('../assets/bear-suggest.png');
+    } else if (status === 'analyzing') {
+      return require('../assets/bear-thinking.png');
+    } else if (status === 'converting') {
+      return require('../assets/bear-suggest.png');
+    } else if (status === 'signing') {
+      return require('../assets/bear-sign.png');
+    } else {
+      return require('../assets/bear-pointing.png');
     }
   };
 

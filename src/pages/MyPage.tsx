@@ -32,7 +32,8 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import Header from '../components/Header';
 import StatisticsSection from '../components/StatisticsSection';
@@ -67,9 +68,11 @@ const MyPage: React.FC<MyPageProps> = ({ onNavigate }) => {
 
         {/* 곰 캐릭터 */}
         <View style={styles.characterSection}>
-          <Text style={styles.characterEmoji}>
-            🐻
-          </Text>
+          <Image
+            source={require('../assets/bear-new.png')}
+            style={styles.characterImage}
+            resizeMode="contain"
+          />
         </View>
 
         {/* 탭 네비게이션 */}
@@ -151,8 +154,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  characterEmoji: {
-    fontSize: 80,
+  characterImage: {
+    width: 80,
+    height: 80,
   },
   tabContainer: {
     flexDirection: 'row',
