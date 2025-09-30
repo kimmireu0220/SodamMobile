@@ -21,10 +21,10 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Image,
   StatusBar,
   SafeAreaView
 } from 'react-native';
+import { Colors, Typography, Spacing, getShadowStyle } from '../styles';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -66,36 +66,29 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onLogoClick }) => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.surface,
   },
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface,
+    ...getShadowStyle('md'),
   },
   logoButton: {
-    padding: 8,
-    borderRadius: 8,
+    padding: Spacing.sm,
+    borderRadius: Spacing.radius.md,
   },
   logoText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2E7D32',
+    fontSize: Typography.fontSize['2xl'],
+    fontWeight: Typography.fontWeight.bold,
+    color: Colors.primary,
   },
   menuButton: {
-    padding: 8,
-    borderRadius: 8,
+    padding: Spacing.sm,
+    borderRadius: Spacing.radius.md,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -107,8 +100,8 @@ const styles = StyleSheet.create({
   menuLine: {
     width: 24,
     height: 3,
-    backgroundColor: '#333333',
-    borderRadius: 2,
+    backgroundColor: Colors.textPrimary,
+    borderRadius: Spacing.radius.sm,
   },
 });
 
