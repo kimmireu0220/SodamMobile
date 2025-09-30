@@ -2,10 +2,10 @@
  * 메인 앱 네비게이션 컴포넌트
  */
 import React from 'react';
+import { Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // 페이지 컴포넌트들
 import Splash from '../pages/Splash';
@@ -124,11 +124,9 @@ const AboutStackNavigator = () => {
 // 메인 앱 네비게이션 컨테이너
 const AppNavigator: React.FC = () => {
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <RootStackNavigator />
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <NavigationContainer>
+      <RootStackNavigator />
+    </NavigationContainer>
   );
 };
 

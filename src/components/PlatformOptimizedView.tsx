@@ -12,7 +12,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
-import { Colors, Typography, Spacing, getShadowStyle } from '../styles';
+import { Colors, Typography, Spacing } from '../styles';
 import usePlatformOptimization from '../hooks/usePlatformOptimization';
 
 interface PlatformOptimizedViewProps {
@@ -241,7 +241,13 @@ export const createPlatformStyles = () => {
       padding: Spacing.lg,
       margin: Spacing.md,
       ...(isIOS && {
-        ...getShadowStyle('md'),
+        shadowColor: Colors.shadow,
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
       }),
       ...(isAndroid && {
         elevation: 4,
@@ -257,7 +263,13 @@ export const createPlatformStyles = () => {
       alignItems: 'center',
       justifyContent: 'center',
       ...(isIOS && {
-        ...getShadowStyle('sm'),
+        shadowColor: Colors.shadow,
+        shadowOffset: {
+          width: 0,
+          height: 1,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
       }),
       ...(isAndroid && {
         elevation: 2,

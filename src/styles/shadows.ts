@@ -82,28 +82,57 @@ export const Shadows = {
   // Combined shadows (iOS + Android)
   combined: {
     none: {
-      ...Shadows.elevation.none,
-      ...Shadows.ios.none,
+      elevation: 0,
     },
     sm: {
-      ...Shadows.elevation.sm,
-      ...Shadows.ios.sm,
+      elevation: 2,
+      shadowColor: Colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
     },
     md: {
-      ...Shadows.elevation.md,
-      ...Shadows.ios.md,
+      elevation: 4,
+      shadowColor: Colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
     },
     lg: {
-      ...Shadows.elevation.lg,
-      ...Shadows.ios.lg,
+      elevation: 8,
+      shadowColor: Colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 4,
+      },
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
     },
     xl: {
-      ...Shadows.elevation.xl,
-      ...Shadows.ios.xl,
+      elevation: 12,
+      shadowColor: Colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 6,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 12,
     },
     '2xl': {
-      ...Shadows.elevation['2xl'],
-      ...Shadows.ios['2xl'],
+      elevation: 16,
+      shadowColor: Colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 8,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 16,
     },
   },
 } as const;
