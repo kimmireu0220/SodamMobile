@@ -185,6 +185,5 @@ export default {
   Colors,
   Typography,
   Spacing,
-  Shadows,
   CommonStyles,
 };
