@@ -22,7 +22,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
+  Image
 } from 'react-native';
 import { Colors, Typography, Spacing, getShadowStyle } from '../styles';
 
@@ -43,7 +44,11 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onLogoClick }) => {
           accessibilityLabel="홈으로 이동"
           accessibilityRole="button"
         >
-          <Text style={styles.logoText}>소담</Text>
+          <Image
+            source={require('../assets/sodam-logo.png')}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
         </TouchableOpacity>
 
         {/* 햄버거 메뉴 */}
@@ -72,19 +77,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
+    paddingHorizontal: 8,
     paddingVertical: Spacing.md,
     backgroundColor: Colors.surface,
     ...getShadowStyle('md'),
   },
   logoButton: {
-    padding: Spacing.sm,
+    padding: 0,
+    paddingLeft: 0,
     borderRadius: Spacing.radius.md,
   },
-  logoText: {
-    fontSize: Typography.fontSize['2xl'],
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary,
+  logoImage: {
+    width: 160,
+    height: 50,
   },
   menuButton: {
     padding: Spacing.sm,
