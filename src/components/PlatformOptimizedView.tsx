@@ -218,8 +218,7 @@ export const PlatformOptimizedScrollView: React.FC<PlatformOptimizedScrollViewPr
 };
 
 // 플랫폼별 최적화된 스타일 생성 함수
-export const createPlatformStyles = () => {
-  const { isIOS, isAndroid } = usePlatformOptimization();
+export const createPlatformStyles = (isIOS: boolean, isAndroid: boolean) => {
 
   return StyleSheet.create({
     // 플랫폼별 컨테이너 스타일

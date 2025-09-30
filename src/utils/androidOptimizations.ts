@@ -2,7 +2,7 @@
  * Android 최적화 설정
  * Android 플랫폼별 최적화 및 설정
  */
-import { Platform } from 'react-native';
+// import { Platform } from 'react-native'; // 향후 사용 예정
 
 // Android 전용 최적화 설정
 export const androidOptimizations = {

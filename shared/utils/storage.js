@@ -10,15 +10,19 @@ let storage;
 if (typeof window !== 'undefined' && window.localStorage) {
   storage = {
     async getItem(key) {
+      // eslint-disable-next-line no-undef
       return localStorage.getItem(key);
     },
     async setItem(key, value) {
+      // eslint-disable-next-line no-undef
       localStorage.setItem(key, value);
     },
     async removeItem(key) {
+      // eslint-disable-next-line no-undef
       localStorage.removeItem(key);
     },
     async clear() {
+      // eslint-disable-next-line no-undef
       localStorage.clear();
     }
   };
