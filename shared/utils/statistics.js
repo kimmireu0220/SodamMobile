@@ -292,11 +292,11 @@ export const analyzeUsagePattern = (dailyUsageData = {}, days = 30) => {
   let mostActiveDay = null;
   let maxDayAverage = 0;
   
-  Object.entries(dayGroups).forEach(([day, counts]) => {
-    const avg = counts.reduce((sum, c) => sum + c, 0) / counts.length;
+  Object.entries(dayGroups).forEach(([day, dayCounts]) => {
+    const avg = dayCounts.reduce((sum, c) => sum + c, 0) / dayCounts.length;
     if (avg > maxDayAverage) {
       maxDayAverage = avg;
-      mostActiveDay = ['일', '월', '화', '수', '목', '금', '토'][parseInt(day)];
+      mostActiveDay = ['일', '월', '화', '수', '목', '금', '토'][parseInt(day, 10)];
     }
   });
 
