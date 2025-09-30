@@ -20,8 +20,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  FlatList
+  StyleSheet
 } from 'react-native';
 
 interface QuickPhrasesProps {
@@ -36,34 +35,37 @@ const QuickPhrases: React.FC<QuickPhrasesProps> = ({ phrases, onPhraseClick }) =
     '#FCE4EC', '#E8EAF6', '#E0F7FA', '#F9FBE7'
   ];
 
-  const renderPhrase = ({ item, index }: { item: string; index: number }) => (
-    <TouchableOpacity
-      key={index}
-      onPress={() => onPhraseClick(item)}
-      style={[
-        styles.phraseButton,
-        { backgroundColor: colors[index % colors.length] }
-      ]}
-      accessibilityLabel={`${item} 선택`}
-      accessibilityRole="button"
-    >
-      <Text style={styles.phraseText}>
-        {item}
-      </Text>
-    </TouchableOpacity>
-  );
+  // 2개씩 묶어서 행으로 만들기
+  const rows: string[][] = [];
+  for (let i = 0; i < phrases.length; i += 2) {
+    rows.push(phrases.slice(i, i + 2));
+  }
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={phrases}
-        renderItem={renderPhrase}
-        keyExtractor={(item, index) => `${item}-${index}`}
-        numColumns={2}
-        contentContainerStyle={styles.grid}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={true}
-      />
+      {rows.map((row, rowIndex) => (
+        <View key={`row-${rowIndex}`} style={styles.row}>
+          {row.map((phrase, colIndex) => {
+            const index = rowIndex * 2 + colIndex;
+            return (
+              <TouchableOpacity
+                key={`${phrase}-${index}`}
+                onPress={() => onPhraseClick(phrase)}
+                style={[
+                  styles.phraseButton,
+                  { backgroundColor: colors[index % colors.length] }
+                ]}
+                accessibilityLabel={`${phrase} 선택`}
+                accessibilityRole="button"
+              >
+                <Text style={styles.phraseText}>
+                  {phrase}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      ))}
     </View>
   );
 };
@@ -82,14 +84,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-    maxHeight: 300,
   },
-  grid: {
+  row: {
+    flexDirection: 'row',
     gap: 8,
+    marginBottom: 8,
   },
   phraseButton: {
     flex: 1,
-    margin: 4,
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,

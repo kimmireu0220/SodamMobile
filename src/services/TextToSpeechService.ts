@@ -1,7 +1,8 @@
 /**
  * 음성 합성(TTS) 서비스
- * React Native TTS를 사용한 음성 합성 기능
+ * iOS에서는 Alert 기반의 간단한 TTS, Android에서는 react-native-tts 사용
  */
+import { Platform, Alert } from 'react-native';
 import Tts from 'react-native-tts';
 
 export interface TTSOptions {
@@ -32,6 +33,7 @@ class TextToSpeechService {
 
   private currentStatus: TTSStatus = 'idle';
   private isInitialized = false;
+  private isIOS = Platform.OS === 'ios';
 
   constructor() {
     this.initialize();
@@ -39,7 +41,14 @@ class TextToSpeechService {
 
   private async initialize() {
     try {
-      // TTS 초기화
+      // iOS에서는 Alert 사용, Android에서만 react-native-tts 초기화
+      if (this.isIOS) {
+        console.log('iOS: Using Alert-based TTS');
+        this.isInitialized = true;
+        return;
+      }
+
+      // Android: TTS 초기화
       await Tts.setDefaultLanguage('ko-KR');
       await Tts.setDefaultRate(0.5);
       await Tts.setDefaultPitch(1.0);
@@ -48,14 +57,11 @@ class TextToSpeechService {
       Tts.addEventListener('tts-start', this.onStart.bind(this));
       Tts.addEventListener('tts-finish', this.onFinish.bind(this));
       Tts.addEventListener('tts-cancel', this.onStop.bind(this));
-      // react-native-tts에서 pause/resume 이벤트는 지원하지 않음
-      // Tts.addEventListener('tts-pause', this.onPause.bind(this));
-      // Tts.addEventListener('tts-resume', this.onResume.bind(this));
       Tts.addEventListener('tts-progress', this.onProgress.bind(this));
       Tts.addEventListener('tts-error', this.onError.bind(this));
       
       this.isInitialized = true;
-      console.log('Text-to-Speech Service initialized');
+      console.log('Android: Text-to-Speech Service initialized');
     } catch (error) {
       console.error('Failed to initialize Text-to-Speech Service:', error);
     }
@@ -122,22 +128,35 @@ class TextToSpeechService {
     }
 
     try {
-      // 옵션 설정
+      // iOS: Alert로 텍스트 표시
+      if (this.isIOS) {
+        this.setStatus('playing');
+        this.listeners.onStart?.();
+        
+        Alert.alert('음성 메시지', text, [
+          {
+            text: '확인',
+            onPress: () => {
+              this.setStatus('idle');
+              this.listeners.onFinish?.();
+            }
+          }
+        ]);
+        
+        return true;
+      }
+
+      // Android: react-native-tts 사용
       if (options.rate !== undefined) {
         await Tts.setDefaultRate(options.rate);
       }
       if (options.pitch !== undefined) {
         await Tts.setDefaultPitch(options.pitch);
       }
-      // Volume 설정은 react-native-tts에서 지원하지 않음
-      // if (options.volume !== undefined) {
-      //   await Tts.setDefaultVolume(options.volume);
-      // }
       if (options.language) {
         await Tts.setDefaultLanguage(options.language);
       }
 
-      // 음성 재생
       await Tts.speak(text);
       return true;
     } catch (error) {
@@ -148,11 +167,17 @@ class TextToSpeechService {
   }
 
   /**
-   * 현재 재생 중인 음성 일시정지 (react-native-tts에서 지원하지 않음)
+   * 현재 재생 중인 음성 일시정지
    */
   async pause(): Promise<boolean> {
     try {
-      // react-native-tts에서는 pause 기능을 지원하지 않으므로 stop으로 대체
+      // iOS는 Alert 기반이므로 pause 불가
+      if (this.isIOS) {
+        console.warn('Pause not supported on iOS (Alert-based TTS)');
+        return false;
+      }
+      
+      // Android: stop으로 대체
       await Tts.stop();
       return true;
     } catch (error) {
@@ -162,12 +187,12 @@ class TextToSpeechService {
   }
 
   /**
-   * 일시정지된 음성 재개 (react-native-tts에서 지원하지 않음)
+   * 일시정지된 음성 재개
    */
   async resume(): Promise<boolean> {
     try {
-      // react-native-tts에서는 resume 기능을 지원하지 않음
-      console.warn('Resume functionality not supported in react-native-tts');
+      // iOS/Android 모두 지원하지 않음
+      console.warn('Resume functionality not supported');
       return false;
     } catch (error) {
       console.error('Failed to resume TTS:', error);
@@ -180,6 +205,13 @@ class TextToSpeechService {
    */
   async stop(): Promise<boolean> {
     try {
+      // iOS는 Alert 기반이므로 stop 불가 (사용자가 수동으로 닫음)
+      if (this.isIOS) {
+        this.setStatus('stopped');
+        return true;
+      }
+      
+      // Android
       await Tts.stop();
       return true;
     } catch (error) {
@@ -193,6 +225,11 @@ class TextToSpeechService {
    */
   async isAvailable(): Promise<boolean> {
     try {
+      // iOS는 Alert 기반이므로 항상 사용 가능
+      if (this.isIOS) {
+        return true;
+      }
+      
       const voices = await Tts.voices();
       return voices && voices.length > 0;
     } catch (error) {
@@ -206,6 +243,11 @@ class TextToSpeechService {
    */
   async getVoices(): Promise<any[]> {
     try {
+      // iOS는 Alert 기반이므로 빈 배열 반환
+      if (this.isIOS) {
+        return [];
+      }
+      
       const voices = await Tts.voices();
       return voices || [];
     } catch (error) {
@@ -240,13 +282,16 @@ class TextToSpeechService {
    * 리소스 정리
    */
   destroy() {
-    Tts.removeAllListeners('tts-start');
-    Tts.removeAllListeners('tts-finish');
-    Tts.removeAllListeners('tts-cancel');
-    Tts.removeAllListeners('tts-pause');
-    Tts.removeAllListeners('tts-resume');
-    Tts.removeAllListeners('tts-progress');
-    Tts.removeAllListeners('tts-error');
+    // iOS는 Alert 기반이므로 정리할 리스너 없음
+    if (!this.isIOS) {
+      Tts.removeAllListeners('tts-start');
+      Tts.removeAllListeners('tts-finish');
+      Tts.removeAllListeners('tts-cancel');
+      Tts.removeAllListeners('tts-pause');
+      Tts.removeAllListeners('tts-resume');
+      Tts.removeAllListeners('tts-progress');
+      Tts.removeAllListeners('tts-error');
+    }
     
     this.listeners = {};
     this.isInitialized = false;
