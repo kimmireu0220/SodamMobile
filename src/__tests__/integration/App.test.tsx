@@ -9,9 +9,4 @@ describe('App Integration', () => {
   it('has integration test suite configured', () => {
     expect(true).toBe(true);
   });
-
-  // TODO: Detox 또는 Appium을 사용한 E2E 테스트 추가
-  it.skip('full app integration test - use E2E testing framework', () => {
-    // Detox나 Appium으로 전체 앱 흐름 테스트
-  });
 });
