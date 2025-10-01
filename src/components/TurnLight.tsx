@@ -22,7 +22,7 @@ import {
 } from 'react-native';
 
 interface TurnLightProps {
-  status: 'idle' | 'listening' | 'analyzing' | 'ready';
+  status: 'idle' | 'listening' | 'analyzing' | 'converting' | 'signing' | 'ready';
 }
 
 const TurnLight: React.FC<TurnLightProps> = ({ status }) => {
@@ -34,6 +34,10 @@ const TurnLight: React.FC<TurnLightProps> = ({ status }) => {
         return { color: '#FFB84D', text: '듣는 중...' };
       case 'analyzing':
         return { color: '#FFB84D', text: '분석 중...' };
+      case 'converting':
+        return { color: '#4D9FFF', text: '변환 중...' };
+      case 'signing':
+        return { color: '#4D9FFF', text: '수화 변환 중...' };
       case 'ready':
         return { color: '#44CC44', text: '준비 완료' };
       default:
@@ -42,7 +46,7 @@ const TurnLight: React.FC<TurnLightProps> = ({ status }) => {
   };
 
   const statusInfo = getStatusInfo();
-  const isActive = status === 'listening' || status === 'analyzing';
+  const isActive = status === 'listening' || status === 'analyzing' || status === 'converting' || status === 'signing';
 
   return (
     <View

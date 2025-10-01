@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 
 interface MicButtonProps {
-  status: 'idle' | 'listening' | 'analyzing' | 'ready';
+  status: 'idle' | 'listening' | 'analyzing' | 'converting' | 'signing' | 'ready';
   onClick: () => void;
 }
 

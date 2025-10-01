@@ -4,7 +4,7 @@
 
 export type RootStackParamList = {
   Splash: undefined;
-  Main: undefined;
+  Main: { screen?: string } | undefined;
   About: undefined;
 };
 
@@ -30,7 +30,7 @@ export type MyPageStackParamList = {
 
 // 네비게이션 프로퍼티 타입
 export type NavigationProp<T> = {
-  navigate: (screen: keyof T, params?: any) => void;
+  navigate: (screen: keyof T | string, params?: any) => void;
   goBack: () => void;
   reset: (state: any) => void;
 };

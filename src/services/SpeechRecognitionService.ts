@@ -158,7 +158,7 @@ class SpeechRecognitionService {
   async isAvailable(): Promise<boolean> {
     try {
       const isAvailable = await Voice.isAvailable();
-      return isAvailable === 1 || isAvailable === true;
+      return Boolean(isAvailable);
     } catch (error) {
       console.error('Failed to check speech recognition availability:', error);
       return false;

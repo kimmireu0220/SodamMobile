@@ -11,6 +11,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  AccessibilityRole,
 } from 'react-native';
 import { Colors, Typography, Spacing } from '../styles';
 import usePlatformOptimization from '../hooks/usePlatformOptimization';
@@ -23,7 +24,7 @@ interface PlatformOptimizedViewProps {
     android?: ViewStyle;
   };
   accessibilityLabel?: string;
-  accessibilityRole?: string;
+  accessibilityRole?: AccessibilityRole;
   accessibilityHint?: string;
 }
 
@@ -64,7 +65,7 @@ interface PlatformOptimizedTextProps {
     android?: TextStyle;
   };
   accessibilityLabel?: string;
-  accessibilityRole?: string;
+  accessibilityRole?: AccessibilityRole;
   accessibilityHint?: string;
 }
 
