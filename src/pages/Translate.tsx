@@ -12,15 +12,18 @@
  * - 수화 변환 버튼
  * 
  * 기능:
- * - 실제 STT API 연동 (향후 구현)
+ * - 실제 STT API 연동
  * - 수화 애니메이션 연동 (향후 구현)
  * - 음성 품질 모니터링 (향후 구현)
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
-  ScrollView
+  ScrollView,
+  Alert,
+  Platform,
+  PermissionsAndroid
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -31,6 +34,7 @@ import MicButton from '../components/MicButton';
 import TurnLight from '../components/TurnLight';
 import SpeechBubble from '../components/SpeechBubble';
 import KSLResultCard from '../components/KSLResultCard';
+import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 
 type TranslateScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -41,49 +45,105 @@ interface TranslateProps {
 const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
   const navigation = useNavigation<TranslateScreenNavigationProp>();
   const [status, setStatus] = useState<'idle' | 'listening' | 'analyzing' | 'converting' | 'signing' | 'ready'>('idle');
-  const [transcript, setTranscript] = useState('');
+  const [localTranscript, setLocalTranscript] = useState('');
   const [kslResult, setKslResult] = useState<{ gloss: string; confidence: number } | null>(null);
+  
+  // 음성 인식 훅 사용
+  const {
+    transcript,
+    isListening,
+    isProcessing,
+    error,
+    startListening,
+    stopListening,
+    reset
+  } = useSpeechRecognition();
 
-  const handleMicClick = () => {
-    switch (status) {
-      case 'idle':
-        setStatus('listening');
-        // TODO: 실제 음성 인식 시작
-        setTimeout(() => {
-          setStatus('analyzing');
-          setTranscript('안녕하세요, 반갑습니다');
-          setTimeout(() => {
-            setStatus('converting');
-            setTimeout(() => {
-              setStatus('signing');
-              setTimeout(() => {
-                setStatus('ready');
-                setKslResult({
-                  gloss: '안녕 반갑다',
-                  confidence: 0.85
-                });
-              }, 1000);
-            }, 1000);
-          }, 2000);
-        }, 3000);
-        break;
-      case 'listening':
-        setStatus('analyzing');
-        break;
-      case 'analyzing':
-        setStatus('converting');
-        break;
-      case 'converting':
+  // 마이크 권한 요청
+  const requestMicPermission = async (): Promise<boolean> => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          {
+            title: '마이크 권한 필요',
+            message: '음성 인식을 위해 마이크 권한이 필요합니다.',
+            buttonNeutral: '나중에',
+            buttonNegative: '거부',
+            buttonPositive: '허용',
+          }
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.error('Failed to request mic permission:', err);
+        return false;
+      }
+    }
+    // iOS는 Info.plist 설정으로 자동 처리
+    return true;
+  };
+
+  // 음성 인식 상태 동기화
+  useEffect(() => {
+    if (isListening) {
+      setStatus('listening');
+    } else if (isProcessing) {
+      setStatus('analyzing');
+    }
+  }, [isListening, isProcessing]);
+
+  // transcript 결과 처리
+  useEffect(() => {
+    if (transcript && transcript.trim()) {
+      setLocalTranscript(transcript);
+      
+      // TODO: Phase 2에서 실제 KSL 변환 로직 구현
+      // 현재는 임시로 더미 데이터 사용
+      setStatus('converting');
+      setTimeout(() => {
         setStatus('signing');
-        break;
-      case 'signing':
-        setStatus('ready');
-        break;
-      case 'ready':
-        setStatus('idle');
-        setTranscript('');
-        setKslResult(null);
-        break;
+        setTimeout(() => {
+          setStatus('ready');
+          setKslResult({
+            gloss: transcript, // Phase 2에서 실제 변환 결과로 교체
+            confidence: 0.85
+          });
+        }, 1000);
+      }, 1000);
+    }
+  }, [transcript]);
+
+  // 에러 처리
+  useEffect(() => {
+    if (error) {
+      Alert.alert('음성 인식 오류', error);
+      setStatus('idle');
+    }
+  }, [error]);
+
+  const handleMicClick = async () => {
+    if (status === 'idle') {
+      // 권한 체크
+      const hasPermission = await requestMicPermission();
+      if (!hasPermission) {
+        Alert.alert('권한 필요', '마이크 권한이 필요합니다. 설정에서 권한을 허용해주세요.');
+        return;
+      }
+
+      // 음성 인식 시작
+      const success = await startListening();
+      if (!success) {
+        Alert.alert('오류', '음성 인식을 시작할 수 없습니다.');
+      }
+    } else if (status === 'listening') {
+      // 음성 인식 중지
+      await stopListening();
+    } else if (status === 'ready') {
+      // 초기화
+      setStatus('idle');
+      setLocalTranscript('');
+      setKslResult(null);
+      reset();
     }
   };
 
@@ -101,8 +161,8 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 곰돌이의 말풍선 - 공간은 항상 확보 */}
         <View style={styles.speechBubbleContainer}>
-          {transcript && (status === 'converting' || status === 'signing' || status === 'ready') && (
-            <SpeechBubble message={`"${transcript}"`} />
+          {localTranscript && (status === 'converting' || status === 'signing' || status === 'ready') && (
+            <SpeechBubble message={`"${localTranscript}"`} />
           )}
         </View>
 
@@ -117,7 +177,7 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
         {/* KSL 변환 결과 */}
         {kslResult && (
           <KSLResultCard 
-            original={transcript}
+            original={localTranscript}
             kslResult={kslResult}
           />
         )}
