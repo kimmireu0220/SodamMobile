@@ -35,6 +35,8 @@ import TurnLight from '../components/TurnLight';
 import SpeechBubble from '../components/SpeechBubble';
 import KSLResultCard from '../components/KSLResultCard';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
+import kslConverterService from '../services/KSLConverterService';
+import storageService from '../services/StorageService';
 
 type TranslateScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -97,19 +99,31 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
     if (transcript && transcript.trim()) {
       setLocalTranscript(transcript);
       
-      // TODO: Phase 2에서 실제 KSL 변환 로직 구현
-      // 현재는 임시로 더미 데이터 사용
+      // 실제 KSL 변환
       setStatus('converting');
+      
+      // 약간의 딜레이를 주어 자연스러운 UI 전환
       setTimeout(() => {
+        const result = kslConverterService.convert(transcript);
+        
         setStatus('signing');
         setTimeout(() => {
           setStatus('ready');
           setKslResult({
-            gloss: transcript, // Phase 2에서 실제 변환 결과로 교체
-            confidence: 0.85
+            gloss: result.kslGloss,
+            confidence: result.confidence
           });
-        }, 1000);
-      }, 1000);
+          
+          // 변환 기록 저장
+          storageService.addKSLTranslation({
+            originalText: result.originalText,
+            kslGloss: result.kslGloss,
+            confidence: result.confidence,
+          }).catch(err => {
+            console.error('Failed to save KSL translation:', err);
+          });
+        }, 800);
+      }, 500);
     }
   }, [transcript]);
 
