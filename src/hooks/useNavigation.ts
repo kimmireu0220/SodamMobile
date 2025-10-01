@@ -4,7 +4,6 @@
  */
 import { useNavigation as useRNNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { RootStackParamList, MainTabParamList } from '../types/navigation';
 
 export const useAppNavigation = () => {
   const navigation = useRNNavigation();

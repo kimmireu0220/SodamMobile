@@ -20,6 +20,35 @@ import { RootStackParamList, MainTabParamList } from '../types/navigation';
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
+// 탭 아이콘 컴포넌트들
+const HomeIcon = ({ color, size }: { color: string; size: number }) => (
+  <Image 
+    source={require('../assets/home-icon.png')} 
+    style={{ width: size, height: size, tintColor: color }}
+  />
+);
+
+const TranslateIcon = ({ color, size }: { color: string; size: number }) => (
+  <Image 
+    source={require('../assets/sign-language-icon.png')} 
+    style={{ width: size, height: size, tintColor: color }}
+  />
+);
+
+const SpeakIcon = ({ color, size }: { color: string; size: number }) => (
+  <Image 
+    source={require('../assets/translate-icon.png')} 
+    style={{ width: size, height: size, tintColor: color }}
+  />
+);
+
+const MyPageIcon = ({ color, size }: { color: string; size: number }) => (
+  <Image 
+    source={require('../assets/profile-icon.png')} 
+    style={{ width: size, height: size, tintColor: color }}
+  />
+);
+
 // 메인 탭 네비게이션
 const MainTabNavigator = () => {
   return (
@@ -47,12 +76,7 @@ const MainTabNavigator = () => {
         component={Home}
         options={{
           tabBarLabel: '홈',
-          tabBarIcon: ({ color, size }) => (
-            <Image 
-              source={require('../assets/home-icon.png')} 
-              style={{ width: size, height: size, tintColor: color }}
-            />
-          ),
+          tabBarIcon: HomeIcon,
         }}
       />
       <Tab.Screen
@@ -60,12 +84,7 @@ const MainTabNavigator = () => {
         component={Translate}
         options={{
           tabBarLabel: '수화 변환',
-          tabBarIcon: ({ color, size }) => (
-            <Image 
-              source={require('../assets/sign-language-icon.png')} 
-              style={{ width: size, height: size, tintColor: color }}
-            />
-          ),
+          tabBarIcon: TranslateIcon,
         }}
       />
       <Tab.Screen
@@ -73,12 +92,7 @@ const MainTabNavigator = () => {
         component={Speak}
         options={{
           tabBarLabel: '텍스트로 말하기',
-          tabBarIcon: ({ color, size }) => (
-            <Image 
-              source={require('../assets/translate-icon.png')} 
-              style={{ width: size, height: size, tintColor: color }}
-            />
-          ),
+          tabBarIcon: SpeakIcon,
         }}
       />
       <Tab.Screen
@@ -86,12 +100,7 @@ const MainTabNavigator = () => {
         component={MyPage}
         options={{
           tabBarLabel: '마이페이지',
-          tabBarIcon: ({ color, size }) => (
-            <Image 
-              source={require('../assets/profile-icon.png')} 
-              style={{ width: size, height: size, tintColor: color }}
-            />
-          ),
+          tabBarIcon: MyPageIcon,
         }}
       />
     </Tab.Navigator>

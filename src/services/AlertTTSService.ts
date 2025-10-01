@@ -25,7 +25,7 @@ class AlertTTSService {
   /**
    * 텍스트를 Alert로 표시 (TTS 대신)
    */
-  async speak(text: string, options: AlertTTSOptions = {}): Promise<boolean> {
+  async speak(text: string, _options: AlertTTSOptions = {}): Promise<boolean> {
     try {
       this.currentText = text;
       this.isPlaying = true;

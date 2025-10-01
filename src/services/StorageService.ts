@@ -8,7 +8,6 @@ import {
   STORAGE_KEYS, 
   StorageKey, 
   StorageValue,
-  StorageKeyToDatabaseKey,
   UserStatistics,
   DailyUsage,
   TopPhrase,

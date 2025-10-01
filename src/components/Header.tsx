@@ -15,14 +15,13 @@
 import React from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   StatusBar,
   SafeAreaView,
   Image
 } from 'react-native';
-import { Colors, Typography, Spacing, getShadowStyle } from '../styles';
+import { Colors, Spacing, getShadowStyle } from '../styles';
 
 interface HeaderProps {
   onLogoClick?: () => void;
@@ -30,7 +29,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} testID="header">
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <View style={styles.container}>
         {/* 로고 */}
@@ -39,11 +38,13 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
           style={styles.logoButton}
           accessibilityLabel="홈으로 이동"
           accessibilityRole="button"
+          testID="logo-button"
         >
           <Image
             source={require('../assets/sodam-logo.png')}
             style={styles.logoImage}
             resizeMode="contain"
+            testID="logo-image"
           />
         </TouchableOpacity>
       </View>

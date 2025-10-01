@@ -19,7 +19,6 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   ScrollView
 } from 'react-native';
@@ -101,7 +100,7 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
     <AppLayout onLogoClick={handleLogoClick}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 곰돌이의 말풍선 - 공간은 항상 확보 */}
-        <View style={{ marginTop: 20, minHeight: 60 }}>
+        <View style={styles.speechBubbleContainer}>
           {transcript && (status === 'converting' || status === 'signing' || status === 'ready') && (
             <SpeechBubble message={`"${transcript}"`} />
           )}
@@ -140,6 +139,10 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingBottom: 100, // 하단 네비게이션 공간
+  },
+  speechBubbleContainer: {
+    marginTop: 20,
+    minHeight: 60,
   },
   micContainer: {
     alignItems: 'center',

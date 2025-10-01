@@ -61,7 +61,8 @@ const CustomPhrasesSection: React.FC = () => {
             category: '인사',
             isFavorite: true,
             usageCount: 0,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
           {
             id: '2',
@@ -69,7 +70,8 @@ const CustomPhrasesSection: React.FC = () => {
             category: '인사',
             isFavorite: true,
             usageCount: 0,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
           {
             id: '3',
@@ -77,7 +79,8 @@ const CustomPhrasesSection: React.FC = () => {
             category: '인사',
             isFavorite: false,
             usageCount: 0,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
           {
             id: '4',
@@ -85,7 +88,8 @@ const CustomPhrasesSection: React.FC = () => {
             category: '응답',
             isFavorite: false,
             usageCount: 0,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
           {
             id: '5',
@@ -93,7 +97,8 @@ const CustomPhrasesSection: React.FC = () => {
             category: '응답',
             isFavorite: false,
             usageCount: 0,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
           {
             id: '6',
@@ -101,7 +106,8 @@ const CustomPhrasesSection: React.FC = () => {
             category: '응답',
             isFavorite: false,
             usageCount: 0,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           }
         ];
         await storageService.set('CUSTOM_PHRASES', defaultPhrases);
@@ -139,7 +145,8 @@ const CustomPhrasesSection: React.FC = () => {
         category: '기타',
         isFavorite: false,
         usageCount: 0,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       const updatedPhrases = [...phrases, phrase];

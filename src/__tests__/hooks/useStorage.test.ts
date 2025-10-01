@@ -1,17 +1,18 @@
 /**
  * useStorage 훅 테스트
  */
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react-native';
 import useStorage from '../../hooks/useStorage';
-import { mockFunctions } from '../../utils/testUtils';
+import storageService from '../../services/StorageService';
 
-// 모킹 설정
+// StorageService 모킹
 jest.mock('../../services/StorageService', () => ({
-  StorageService: {
-    getItem: mockFunctions.storage.getItem,
-    setItem: mockFunctions.storage.setItem,
-    removeItem: mockFunctions.storage.removeItem,
-    clear: mockFunctions.storage.clear,
+  __esModule: true,
+  default: {
+    get: jest.fn(),
+    set: jest.fn(),
+    remove: jest.fn(),
+    clear: jest.fn(),
   },
 }));
 
@@ -20,72 +21,217 @@ describe('useStorage', () => {
     jest.clearAllMocks();
   });
 
-  it('should initialize with default values', () => {
-    const { result } = renderHook(() => useStorage());
-    
-    expect(result.current.isLoading).toBe(false);
-    expect(result.current.error).toBeNull();
+  describe('초기화', () => {
+    it('should load data on mount', async () => {
+      const testData = { totalTranslations: 10 };
+      (storageService.get as jest.Mock).mockResolvedValue(testData);
+
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      // 초기 로딩 상태
+      expect(result.current.loading).toBe(true);
+      expect(result.current.data).toBeNull();
+
+      // 데이터 로드 완료 대기
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.data).toEqual(testData);
+      expect(result.current.error).toBeNull();
+      expect(storageService.get).toHaveBeenCalledWith('USER_STATISTICS');
+    });
+
+    it('should handle loading errors', async () => {
+      const error = new Error('Load failed');
+      (storageService.get as jest.Mock).mockRejectedValue(error);
+
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.data).toBeNull();
+      expect(result.current.error).toBe('Load failed');
+    });
+
+    it('should handle null data', async () => {
+      (storageService.get as jest.Mock).mockResolvedValue(null);
+
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.data).toBeNull();
+      expect(result.current.error).toBeNull();
+    });
   });
 
-  it('should save data successfully', async () => {
-    const { result } = renderHook(() => useStorage());
-    
-    await act(async () => {
-      await result.current.saveData('test-key', { test: 'data' });
+  describe('setData', () => {
+    it('should save data successfully', async () => {
+      const testData = { totalTranslations: 10 };
+      (storageService.get as jest.Mock).mockResolvedValue(null);
+      (storageService.set as jest.Mock).mockResolvedValue(true);
+
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      // setData 호출
+      const setResult = await result.current.setData(testData);
+
+      expect(setResult).toBe(true);
+      expect(storageService.set).toHaveBeenCalledWith('USER_STATISTICS', testData);
+      
+      // 상태 업데이트 대기
+      await waitFor(() => {
+        expect(result.current.data).toEqual(testData);
+      });
+      
+      expect(result.current.error).toBeNull();
     });
-    
-    expect(mockFunctions.storage.setItem).toHaveBeenCalledWith('test-key', JSON.stringify({ test: 'data' }));
-    expect(result.current.error).toBeNull();
+
+    it('should handle save errors', async () => {
+      (storageService.get as jest.Mock).mockResolvedValue(null);
+      (storageService.set as jest.Mock).mockResolvedValue(false);
+
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      let setResult: boolean = true;
+      await waitFor(async () => {
+        setResult = await result.current.setData({ totalTranslations: 10 });
+      });
+
+      expect(setResult).toBe(false);
+    });
   });
 
-  it('should load data successfully', async () => {
-    const testData = { test: 'data' };
-    mockFunctions.storage.getItem.mockResolvedValue(JSON.stringify(testData));
-    
-    const { result } = renderHook(() => useStorage());
-    
-    await act(async () => {
-      const data = await result.current.loadData('test-key');
-      expect(data).toEqual(testData);
+  describe('updateData', () => {
+    it('should update existing data', async () => {
+      const initialData = { totalTranslations: 10, totalTextInputs: 5 };
+      (storageService.get as jest.Mock).mockResolvedValue(initialData);
+      (storageService.set as jest.Mock).mockResolvedValue(true);
+
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      // updateData 호출
+      let updateResult: boolean = false;
+      await waitFor(async () => {
+        updateResult = await result.current.updateData({ totalTranslations: 15 });
+      });
+
+      expect(updateResult).toBe(true);
+      expect(storageService.set).toHaveBeenCalledWith('USER_STATISTICS', {
+        totalTranslations: 15,
+        totalTextInputs: 5,
+      });
     });
-    
-    expect(mockFunctions.storage.getItem).toHaveBeenCalledWith('test-key');
+
+    it('should fail when no data exists', async () => {
+      (storageService.get as jest.Mock).mockResolvedValue(null);
+
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      const updateResult = await result.current.updateData({ totalTranslations: 15 });
+
+      expect(updateResult).toBe(false);
+      
+      // 에러 상태 업데이트 대기
+      await waitFor(() => {
+        expect(result.current.error).toBe('No data to update');
+      });
+    });
   });
 
-  it('should handle errors when saving data', async () => {
-    const error = new Error('Storage error');
-    mockFunctions.storage.setItem.mockRejectedValue(error);
-    
-    const { result } = renderHook(() => useStorage());
-    
-    await act(async () => {
-      await result.current.saveData('test-key', { test: 'data' });
+  describe('removeData', () => {
+    it('should remove data successfully', async () => {
+      const testData = { totalTranslations: 10 };
+      (storageService.get as jest.Mock).mockResolvedValue(testData);
+      (storageService.remove as jest.Mock).mockResolvedValue(true);
+
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.data).toEqual(testData);
+
+      // removeData 호출
+      const removeResult = await result.current.removeData();
+
+      expect(removeResult).toBe(true);
+      expect(storageService.remove).toHaveBeenCalledWith('USER_STATISTICS');
+      
+      // 상태 업데이트 대기
+      await waitFor(() => {
+        expect(result.current.data).toBeNull();
+      });
     });
-    
-    expect(result.current.error).toBe(error);
+
+    it('should handle remove errors', async () => {
+      (storageService.get as jest.Mock).mockResolvedValue({ totalTranslations: 10 });
+      (storageService.remove as jest.Mock).mockResolvedValue(false);
+
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      let removeResult: boolean = true;
+      await waitFor(async () => {
+        removeResult = await result.current.removeData();
+      });
+
+      expect(removeResult).toBe(false);
+    });
   });
 
-  it('should handle errors when loading data', async () => {
-    const error = new Error('Storage error');
-    mockFunctions.storage.getItem.mockRejectedValue(error);
-    
-    const { result } = renderHook(() => useStorage());
-    
-    await act(async () => {
-      await result.current.loadData('test-key');
-    });
-    
-    expect(result.current.error).toBe(error);
-  });
+  describe('refresh', () => {
+    it('should reload data', async () => {
+      const initialData = { totalTranslations: 10 };
+      const updatedData = { totalTranslations: 20 };
+      
+      (storageService.get as jest.Mock)
+        .mockResolvedValueOnce(initialData)
+        .mockResolvedValueOnce(updatedData);
 
-  it('should clear data successfully', async () => {
-    const { result } = renderHook(() => useStorage());
-    
-    await act(async () => {
-      await result.current.clearData();
+      const { result } = renderHook(() => useStorage('USER_STATISTICS'));
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.data).toEqual(initialData);
+
+      // refresh 호출
+      await waitFor(async () => {
+        await result.current.refresh();
+      });
+
+      await waitFor(() => {
+        expect(result.current.data).toEqual(updatedData);
+      });
+
+      expect(storageService.get).toHaveBeenCalledTimes(2);
     });
-    
-    expect(mockFunctions.storage.clear).toHaveBeenCalled();
-    expect(result.current.error).toBeNull();
   });
 });

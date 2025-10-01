@@ -45,7 +45,7 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
   const [text, setText] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [phrases, setPhrases] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [_isLoading, setIsLoading] = useState(true);
 
   // 마이페이지의 개인 상용구 로드
   useEffect(() => {

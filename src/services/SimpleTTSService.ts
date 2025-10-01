@@ -89,13 +89,8 @@ class SimpleTTSService {
    * TTS 엔진 사용 가능 여부 확인
    */
   async isAvailable(): Promise<boolean> {
-    try {
-      // Expo Speech는 항상 사용 가능
-      return true;
-    } catch (error) {
-      console.error('Failed to check TTS availability:', error);
-      return false;
-    }
+    // Expo Speech는 항상 사용 가능
+    return true;
   }
 
   /**

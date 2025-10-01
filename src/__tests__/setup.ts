@@ -3,6 +3,17 @@
  */
 import 'react-native-gesture-handler/jestSetup';
 
+// NativeEventEmitter 모킹 (Keyboard 등에 필요)
+jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter', () => {
+  class MockEventEmitter {
+    addListener = jest.fn();
+    removeListener = jest.fn();
+    removeAllListeners = jest.fn();
+    emit = jest.fn();
+  }
+  return MockEventEmitter;
+});
+
 // 네비게이션 모킹
 jest.mock('@react-navigation/native', () => ({
   ...jest.requireActual('@react-navigation/native'),
@@ -50,32 +61,105 @@ jest.mock('react-native-tts', () => ({
   getInitStatus: jest.fn(() => Promise.resolve('success')),
 }));
 
-// 플랫폼 모킹
+// NativeDeviceInfo 모킹
+jest.mock('react-native/src/private/specs_DEPRECATED/modules/NativeDeviceInfo', () => ({
+  getConstants: () => ({
+    Dimensions: {
+      windowPhysicalPixels: {
+        width: 1080,
+        height: 1920,
+        scale: 3,
+        fontScale: 1,
+      },
+      screenPhysicalPixels: {
+        width: 1080,
+        height: 1920,
+        scale: 3,
+        fontScale: 1,
+      },
+    },
+  }),
+}));
+
+// NativePlatformConstantsIOS 모킹
+jest.mock('react-native/Libraries/Utilities/NativePlatformConstantsIOS', () => ({
+  __esModule: true,
+  default: {
+    getConstants: () => ({
+      interfaceIdiom: 'phone',
+      isTesting: true,
+      osVersion: '15.0',
+      systemName: 'iOS',
+    }),
+  },
+}));
+
+// NativeStatusBarManagerIOS 모킹
+jest.mock('react-native/src/private/specs_DEPRECATED/modules/NativeStatusBarManagerIOS', () => ({
+  __esModule: true,
+  default: {
+    getConstants: () => ({
+      HEIGHT: 20,
+    }),
+    getHeight: jest.fn((callback: (height: { height: number }) => void) => callback({ height: 20 })),
+    setStyle: jest.fn(),
+    setHidden: jest.fn(),
+    setNetworkActivityIndicatorVisible: jest.fn(),
+  },
+}));
+
+// NativeAnimatedHelper 모킹
+jest.mock('react-native/src/private/animated/NativeAnimatedHelper', () => ({
+  API: {
+    flushQueue: jest.fn(),
+    sendKeyDown: jest.fn(),
+    sendKeyUp: jest.fn(),
+  },
+}));
+
+// TurboModuleRegistry 모킹 (DevMenu 에러 해결)
+jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
+  const registry = {
+    getEnforcing: jest.fn((name: string) => {
+      if (name === 'DevMenu') {
+        return {
+          show: jest.fn(),
+          hide: jest.fn(),
+        };
+      }
+      if (name === 'DeviceInfo') {
+        return {
+          getConstants: () => ({
+            Dimensions: {
+              windowPhysicalPixels: {
+                width: 1080,
+                height: 1920,
+                scale: 3,
+                fontScale: 1,
+              },
+            },
+          }),
+        };
+      }
+      return {};
+    }),
+    get: jest.fn(() => null),
+  };
+  return registry;
+});
+
+// 플랫폼 특정 속성 모킹
 jest.mock('react-native', () => {
   const RN = jest.requireActual('react-native');
-  return {
-    ...RN,
-    Platform: {
-      OS: 'ios',
-      Version: '15.0',
-      isPad: false,
-    },
-    Dimensions: {
-      get: jest.fn(() => ({
-        width: 375,
-        height: 812,
-      })),
-    },
-    StatusBar: {
-      currentHeight: 0,
-      setBarStyle: jest.fn(),
-      setBackgroundColor: jest.fn(),
-    },
-  };
+  
+  RN.Platform.OS = 'ios';
+  RN.Platform.Version = '15.0';
+  
+  return RN;
 });
 
 // 글로벌 설정
-global.console = {
+globalThis.console = {
   ...console,
   log: jest.fn(),
   debug: jest.fn(),
