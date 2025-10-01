@@ -100,10 +100,10 @@ const MicButton: React.FC<MicButtonProps> = ({ status, onClick }) => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#2E7D32',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    minWidth: 140,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 10,
+    minWidth: 110,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
@@ -124,14 +124,14 @@ const styles = StyleSheet.create({
   buttonContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
   icon: {
-    fontSize: 26,
+    fontSize: 22,
   },
   text: {
     color: '#ffffff',
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: '700',
   },
 });

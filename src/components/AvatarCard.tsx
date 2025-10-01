@@ -47,13 +47,12 @@ const AvatarCard: React.FC<AvatarCardProps> = ({ status, message }) => {
   };
 
   const getBearImage = () => {
-    // Sodam-main과 정확히 동일한 로직
     if (status === 'ready') {
-      return require('../assets/bear-suggest.png');
+      return require('../assets/bear-sign.png'); // 변환 완료 시 수화하는 곰
     } else if (status === 'analyzing') {
       return require('../assets/bear-thinking.png');
     } else if (status === 'converting') {
-      return require('../assets/bear-suggest.png');
+      return require('../assets/bear-thinking.png'); // 변환 중 생각하는 곰
     } else if (status === 'signing') {
       return require('../assets/bear-sign.png');
     } else {

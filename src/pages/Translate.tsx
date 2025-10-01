@@ -106,8 +106,8 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 곰돌이의 말풍선 - 공간은 항상 확보 */}
         <View style={{ marginTop: 20, minHeight: 60 }}>
-          {status === 'ready' && (
-            <SpeechBubble message={'수화 변환이 완료되었습니다!'} />
+          {transcript && (status === 'converting' || status === 'signing' || status === 'ready') && (
+            <SpeechBubble message={`"${transcript}"`} />
           )}
         </View>
 
