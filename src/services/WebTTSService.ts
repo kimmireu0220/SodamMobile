@@ -10,6 +10,7 @@
  * - 한국어 지원 우수
  * - 설정 불필요
  */
+// @ts-ignore - react-native-webview는 선택적 의존성입니다
 import { WebView } from 'react-native-webview';
 
 export interface WebTTSOptions {

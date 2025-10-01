@@ -8,6 +8,7 @@ import {
   STORAGE_KEYS, 
   StorageKey, 
   StorageValue,
+  StorageKeyToDatabaseKey,
   UserStatistics,
   DailyUsage,
   TopPhrase,
@@ -296,7 +297,7 @@ class StorageService {
    */
   async backup(): Promise<string | null> {
     try {
-      const allData: Partial<DatabaseSchema> = {};
+      const allData: any = {};
       
       for (const key of Object.keys(STORAGE_KEYS) as StorageKey[]) {
         const data = await this.get(key);

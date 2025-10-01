@@ -11,7 +11,8 @@ export const isAndroid = Platform.OS === 'android';
 export const deviceInfo = {
   platform: Platform.OS,
   version: Platform.Version,
-  isTablet: Platform.isPad || (Platform.OS === 'android' && Platform.isPad),
+  isTablet: (Platform.OS === 'ios' && (Platform as any).isPad) || 
+            (Platform.OS === 'android' && Dimensions.get('window').width >= 768),
   screenWidth: Dimensions.get('window').width,
   screenHeight: Dimensions.get('window').height,
   statusBarHeight: StatusBar.currentHeight || 0,

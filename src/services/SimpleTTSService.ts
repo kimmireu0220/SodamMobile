@@ -9,6 +9,7 @@
  * - 안정적으로 작동
  * - 한국어 지원
  */
+// @ts-ignore - expo-speech는 선택적 의존성입니다
 import * as Speech from 'expo-speech';
 
 export interface SimpleTTSOptions {
@@ -53,7 +54,7 @@ class SimpleTTSService {
           console.log('TTS stopped');
           this.isPlaying = false;
         },
-        onError: (error) => {
+        onError: (error: any) => {
           console.error('TTS error:', error);
           this.isPlaying = false;
         }

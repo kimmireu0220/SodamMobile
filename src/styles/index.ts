@@ -88,19 +88,19 @@ export const CommonStyles = StyleSheet.create({
   
   // Text styles
   buttonText: {
-    ...Typography.fontSize.base,
+    fontSize: Typography.fontSize.base,
     fontWeight: Typography.fontWeight.semibold,
     color: Colors.textInverse,
   },
   
   buttonTextSecondary: {
-    ...Typography.fontSize.base,
+    fontSize: Typography.fontSize.base,
     fontWeight: Typography.fontWeight.semibold,
     color: Colors.textInverse,
   },
   
   buttonTextOutline: {
-    ...Typography.fontSize.base,
+    fontSize: Typography.fontSize.base,
     fontWeight: Typography.fontWeight.semibold,
     color: Colors.primary,
   },

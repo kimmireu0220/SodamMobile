@@ -114,6 +114,18 @@ export const STORAGE_KEYS = {
 export type StorageKey = keyof typeof STORAGE_KEYS;
 export type StorageValue = DatabaseSchema[keyof DatabaseSchema];
 
+// StorageKey와 DatabaseSchema 키 매핑
+export type StorageKeyToDatabaseKey = {
+  USER_STATISTICS: 'userStatistics';
+  DAILY_USAGE: 'dailyUsage';
+  TOP_PHRASES: 'topPhrases';
+  CUSTOM_PHRASES: 'customPhrases';
+  KSL_TRANSLATIONS: 'kslTranslations';
+  APP_SETTINGS: 'appSettings';
+  USER_PROFILE: 'userProfile';
+  APP_STATE: 'appState';
+};
+
 export default {
   UserStatistics: {} as UserStatistics,
   DailyUsage: {} as DailyUsage,
