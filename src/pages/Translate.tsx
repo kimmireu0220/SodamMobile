@@ -130,8 +130,18 @@ const Translate: React.FC<TranslateProps> = ({ onNavigate }) => {
   // 에러 처리
   useEffect(() => {
     if (error) {
-      Alert.alert('음성 인식 오류', error);
-      setStatus('idle');
+      // "No speech detected" 에러는 사용자 친화적인 메시지로 표시
+      if (error.includes('1110') || error.includes('No speech detected')) {
+        // 에러 표시 없이 조용히 idle로 돌아가기
+        setStatus('idle');
+      } else {
+        // 다른 실제 에러만 표시
+        Alert.alert(
+          '음성 인식 실패', 
+          '음성 인식에 문제가 발생했어요.\n다시 시도해주세요.'
+        );
+        setStatus('idle');
+      }
     }
   }, [error]);
 
