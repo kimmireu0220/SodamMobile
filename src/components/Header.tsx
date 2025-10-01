@@ -1,19 +1,16 @@
 /**
  * Header Component (React Native)
  * 
- * 역할: 앱의 상단 헤더를 표시하며, 로고와 네비게이션 메뉴를 제공합니다.
+ * 역할: 앱의 상단 헤더를 표시하며, 로고를 제공합니다.
  * 
  * 입력:
- * - onMenuClick: 햄버거 메뉴 클릭 시 호출되는 콜백 함수
  * - onLogoClick: 로고 클릭 시 호출되는 콜백 함수
  * 
  * 출력:
  * - 로고 표시
- * - 햄버거 메뉴 버튼
  * 
  * 향후 연동 지점:
  * - 로고 클릭 시 홈으로 이동
- * - 햄버거 메뉴에서 설정, 프로필 등 추가 메뉴
  */
 import React from 'react';
 import {
@@ -28,11 +25,10 @@ import {
 import { Colors, Typography, Spacing, getShadowStyle } from '../styles';
 
 interface HeaderProps {
-  onMenuClick?: () => void;
   onLogoClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onMenuClick, onLogoClick }) => {
+const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
@@ -50,20 +46,6 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onLogoClick }) => {
             resizeMode="contain"
           />
         </TouchableOpacity>
-
-        {/* 햄버거 메뉴 */}
-        <TouchableOpacity
-          onPress={onMenuClick}
-          style={styles.menuButton}
-          accessibilityLabel="메뉴 열기"
-          accessibilityRole="button"
-        >
-          <View style={styles.menuIcon}>
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-          </View>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -75,7 +57,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: Spacing.md,
@@ -92,23 +73,6 @@ const styles = StyleSheet.create({
   logoImage: {
     width: 160,
     height: 50,
-  },
-  menuButton: {
-    padding: Spacing.sm,
-    borderRadius: Spacing.radius.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menuIcon: {
-    width: 24,
-    height: 18,
-    justifyContent: 'space-between',
-  },
-  menuLine: {
-    width: 24,
-    height: 3,
-    backgroundColor: Colors.textPrimary,
-    borderRadius: Spacing.radius.sm,
   },
 });
 

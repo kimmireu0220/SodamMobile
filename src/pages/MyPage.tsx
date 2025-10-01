@@ -51,10 +51,6 @@ const MyPage: React.FC<MyPageProps> = ({ onNavigate }) => {
   const navigation = useNavigation<MyPageScreenNavigationProp>();
   const [activeTab, setActiveTab] = useState<'stats' | 'phrases'>('stats');
 
-  const handleMenuClick = () => {
-    if (onNavigate) onNavigate('/about');
-  };
-
   const handleLogoClick = () => {
     // 홈으로 이동
     if (onNavigate) {
@@ -65,7 +61,7 @@ const MyPage: React.FC<MyPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <AppLayout onMenuClick={handleMenuClick} onLogoClick={handleLogoClick}>
+    <AppLayout onLogoClick={handleLogoClick}>
       <View style={styles.content}>
         {/* 환영 메시지 */}
         <View style={styles.welcomeSection}>

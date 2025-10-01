@@ -15,7 +15,7 @@
  * - TTS 기능 연동
  * - 사용자 맞춤 문구 저장
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -23,8 +23,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
-  Image
+  Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -32,6 +31,8 @@ import { RootStackParamList } from '../types/navigation';
 import AppLayout from '../components/AppLayout';
 import QuickPhrases from '../components/QuickPhrases';
 import BigTextCard from '../components/BigTextCard';
+import storageService from '../services/StorageService';
+import { CustomPhrase } from '../types/data';
 
 type SpeakScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -43,6 +44,50 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
   const navigation = useNavigation<SpeakScreenNavigationProp>();
   const [text, setText] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [phrases, setPhrases] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 마이페이지의 개인 상용구 로드
+  useEffect(() => {
+    loadPhrases();
+  }, []);
+
+  const loadPhrases = async () => {
+    try {
+      const customPhrases = await storageService.get<CustomPhrase[]>('CUSTOM_PHRASES');
+      if (customPhrases && customPhrases.length > 0) {
+        // 사용 횟수 순으로 정렬하여 상위 6개만 표시
+        const sortedPhrases = [...customPhrases]
+          .sort((a, b) => b.usageCount - a.usageCount)
+          .slice(0, 6)
+          .map(p => p.text);
+        setPhrases(sortedPhrases);
+      } else {
+        // 저장된 상용구가 없으면 기본 상용구 사용 (6개)
+        setPhrases([
+          '안녕하세요',
+          '감사합니다',
+          '죄송합니다',
+          '괜찮습니다',
+          '네',
+          '아니요'
+        ]);
+      }
+    } catch (error) {
+      console.error('Failed to load custom phrases:', error);
+      // 에러 시 기본 상용구 사용
+      setPhrases([
+        '안녕하세요',
+        '감사합니다',
+        '죄송합니다',
+        '괜찮습니다',
+        '네',
+        '아니요'
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handlePhraseClick = (phrase: string) => {
     setText(phrase);
@@ -54,10 +99,6 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
     } else {
       Alert.alert('알림', '텍스트를 입력해주세요.');
     }
-  };
-
-  const handleMenuClick = () => {
-    if (onNavigate) onNavigate('/about');
   };
 
   const handleLogoClick = () => {
@@ -73,22 +114,8 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
     setShowModal(false);
   };
 
-  // 더미 상용구 데이터
-  const phrases = [
-    '안녕하세요',
-    '감사합니다',
-    '죄송합니다',
-    '괜찮습니다',
-    '네',
-    '아니요',
-    '도움이 필요합니다',
-    '화장실은 어디인가요?',
-    '얼마나 걸리나요?',
-    '언제 시작하나요?'
-  ];
-
   return (
-    <AppLayout onMenuClick={handleMenuClick} onLogoClick={handleLogoClick}>
+    <AppLayout onLogoClick={handleLogoClick}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 제목 */}
         <View style={styles.titleSection}>
@@ -98,15 +125,6 @@ const Speak: React.FC<SpeakProps> = ({ onNavigate }) => {
           <Text style={styles.subtitle}>
             직접 입력하거나 상용구를 선택하여 음성으로 전달하세요
           </Text>
-        </View>
-
-        {/* 곰 캐릭터 */}
-        <View style={styles.characterSection}>
-          <Image
-            source={require('../assets/bear-pointing.png')}
-            style={styles.characterImage}
-            resizeMode="contain"
-          />
         </View>
 
         {/* 텍스트 입력 */}
@@ -182,14 +200,6 @@ const styles = StyleSheet.create({
     color: '#666666',
     textAlign: 'center',
     lineHeight: 24,
-  },
-  characterSection: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  characterImage: {
-    width: 80,
-    height: 80,
   },
   inputSection: {
     backgroundColor: '#ffffff',

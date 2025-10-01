@@ -100,9 +100,30 @@ class StorageService {
       },
     };
 
-    // 기본 데이터 저장
-    for (const [key, value] of Object.entries(defaultData)) {
-      await this.set(key as StorageKey, value);
+    // 기본 데이터 저장 - 올바른 StorageKey 매핑
+    if (defaultData.userStatistics) {
+      await this.set('USER_STATISTICS', defaultData.userStatistics);
+    }
+    if (defaultData.dailyUsage) {
+      await this.set('DAILY_USAGE', defaultData.dailyUsage);
+    }
+    if (defaultData.topPhrases) {
+      await this.set('TOP_PHRASES', defaultData.topPhrases);
+    }
+    if (defaultData.customPhrases) {
+      await this.set('CUSTOM_PHRASES', defaultData.customPhrases);
+    }
+    if (defaultData.kslTranslations) {
+      await this.set('KSL_TRANSLATIONS', defaultData.kslTranslations);
+    }
+    if (defaultData.appSettings) {
+      await this.set('APP_SETTINGS', defaultData.appSettings);
+    }
+    if (defaultData.userProfile) {
+      await this.set('USER_PROFILE', defaultData.userProfile);
+    }
+    if (defaultData.appState) {
+      await this.set('APP_STATE', defaultData.appState);
     }
   }
 

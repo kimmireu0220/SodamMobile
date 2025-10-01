@@ -32,14 +32,8 @@ import {
   Alert,
   Modal
 } from 'react-native';
-
-interface CustomPhrase {
-  id: string;
-  text: string;
-  isFavorite: boolean;
-  usageCount: number;
-  createdAt: string;
-}
+import storageService from '../services/StorageService';
+import { CustomPhrase } from '../types/data';
 
 const CustomPhrasesSection: React.FC = () => {
   const [phrases, setPhrases] = useState<CustomPhrase[]>([]);
@@ -50,37 +44,76 @@ const CustomPhrasesSection: React.FC = () => {
   const [newPhrase, setNewPhrase] = useState('');
 
   useEffect(() => {
-    // TODO: AsyncStorage에서 데이터 로드
-    // 현재는 더미 데이터로 구현
-    const dummyPhrases: CustomPhrase[] = [
-      {
-        id: '1',
-        text: '안녕하세요',
-        isFavorite: true,
-        usageCount: 15,
-        createdAt: '2024-01-01'
-      },
-      {
-        id: '2',
-        text: '감사합니다',
-        isFavorite: true,
-        usageCount: 12,
-        createdAt: '2024-01-02'
-      },
-      {
-        id: '3',
-        text: '회의실은 어디인가요?',
-        isFavorite: false,
-        usageCount: 8,
-        createdAt: '2024-01-03'
-      }
-    ];
-
-    setTimeout(() => {
-      setPhrases(dummyPhrases);
-      setIsLoading(false);
-    }, 1000);
+    loadPhrases();
   }, []);
+
+  const loadPhrases = async () => {
+    try {
+      const savedPhrases = await storageService.get<CustomPhrase[]>('CUSTOM_PHRASES');
+      if (savedPhrases && savedPhrases.length > 0) {
+        setPhrases(savedPhrases);
+      } else {
+        // 첫 실행 시 기본 상용구 생성 (6개)
+        const defaultPhrases: CustomPhrase[] = [
+          {
+            id: '1',
+            text: '안녕하세요',
+            category: '인사',
+            isFavorite: true,
+            usageCount: 0,
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: '2',
+            text: '감사합니다',
+            category: '인사',
+            isFavorite: true,
+            usageCount: 0,
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: '3',
+            text: '죄송합니다',
+            category: '인사',
+            isFavorite: false,
+            usageCount: 0,
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: '4',
+            text: '괜찮습니다',
+            category: '응답',
+            isFavorite: false,
+            usageCount: 0,
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: '5',
+            text: '네',
+            category: '응답',
+            isFavorite: false,
+            usageCount: 0,
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: '6',
+            text: '아니요',
+            category: '응답',
+            isFavorite: false,
+            usageCount: 0,
+            createdAt: new Date().toISOString()
+          }
+        ];
+        await storageService.set('CUSTOM_PHRASES', defaultPhrases);
+        setPhrases(defaultPhrases);
+      }
+    } catch (error) {
+      console.error('Failed to load custom phrases:', error);
+      Alert.alert('오류', '상용구를 불러오는데 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const filteredPhrases = phrases.filter(phrase => {
     if (showFavoritesOnly && !phrase.isFavorite) {
@@ -93,23 +126,32 @@ const CustomPhrasesSection: React.FC = () => {
     return b.usageCount - a.usageCount;
   });
 
-  const handleAddPhrase = () => {
+  const handleAddPhrase = async () => {
     if (!newPhrase.trim()) {
       Alert.alert('오류', '문구를 입력해주세요.');
       return;
     }
 
-    const phrase: CustomPhrase = {
-      id: Date.now().toString(),
-      text: newPhrase.trim(),
-      isFavorite: false,
-      usageCount: 0,
-      createdAt: new Date().toISOString().split('T')[0]
-    };
+    try {
+      const phrase: CustomPhrase = {
+        id: Date.now().toString(),
+        text: newPhrase.trim(),
+        category: '기타',
+        isFavorite: false,
+        usageCount: 0,
+        createdAt: new Date().toISOString()
+      };
 
-    setPhrases([...phrases, phrase]);
-    setNewPhrase('');
-    setShowModal(false);
+      const updatedPhrases = [...phrases, phrase];
+      await storageService.set('CUSTOM_PHRASES', updatedPhrases);
+      setPhrases(updatedPhrases);
+      setNewPhrase('');
+      setShowModal(false);
+      Alert.alert('성공', '상용구가 추가되었습니다.');
+    } catch (error) {
+      console.error('Failed to add phrase:', error);
+      Alert.alert('오류', '상용구 추가에 실패했습니다.');
+    }
   };
 
   const handleEditPhrase = (phrase: CustomPhrase) => {
@@ -118,21 +160,29 @@ const CustomPhrasesSection: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleUpdatePhrase = () => {
+  const handleUpdatePhrase = async () => {
     if (!editingPhrase || !newPhrase.trim()) {
       Alert.alert('오류', '문구를 입력해주세요.');
       return;
     }
 
-    setPhrases(phrases.map(p => 
-      p.id === editingPhrase.id 
-        ? { ...p, text: newPhrase.trim() }
-        : p
-    ));
+    try {
+      const updatedPhrases = phrases.map(p => 
+        p.id === editingPhrase.id 
+          ? { ...p, text: newPhrase.trim() }
+          : p
+      );
 
-    setEditingPhrase(null);
-    setNewPhrase('');
-    setShowModal(false);
+      await storageService.set('CUSTOM_PHRASES', updatedPhrases);
+      setPhrases(updatedPhrases);
+      setEditingPhrase(null);
+      setNewPhrase('');
+      setShowModal(false);
+      Alert.alert('성공', '상용구가 수정되었습니다.');
+    } catch (error) {
+      console.error('Failed to update phrase:', error);
+      Alert.alert('오류', '상용구 수정에 실패했습니다.');
+    }
   };
 
   const handleDeletePhrase = (id: string) => {
@@ -144,16 +194,32 @@ const CustomPhrasesSection: React.FC = () => {
         { 
           text: '삭제', 
           style: 'destructive',
-          onPress: () => setPhrases(phrases.filter(p => p.id !== id))
+          onPress: async () => {
+            try {
+              const updatedPhrases = phrases.filter(p => p.id !== id);
+              await storageService.set('CUSTOM_PHRASES', updatedPhrases);
+              setPhrases(updatedPhrases);
+            } catch (error) {
+              console.error('Failed to delete phrase:', error);
+              Alert.alert('오류', '상용구 삭제에 실패했습니다.');
+            }
+          }
         }
       ]
     );
   };
 
-  const handleToggleFavorite = (id: string) => {
-    setPhrases(phrases.map(p => 
-      p.id === id ? { ...p, isFavorite: !p.isFavorite } : p
-    ));
+  const handleToggleFavorite = async (id: string) => {
+    try {
+      const updatedPhrases = phrases.map(p => 
+        p.id === id ? { ...p, isFavorite: !p.isFavorite } : p
+      );
+      await storageService.set('CUSTOM_PHRASES', updatedPhrases);
+      setPhrases(updatedPhrases);
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+      Alert.alert('오류', '즐겨찾기 변경에 실패했습니다.');
+    }
   };
 
   if (isLoading) {

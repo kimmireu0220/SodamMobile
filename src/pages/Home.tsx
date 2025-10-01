@@ -39,15 +39,6 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
-  const handleMenuClick = () => {
-    if (onNavigate) {
-      onNavigate('/about');
-    } else {
-      // React Navigation 사용
-      navigation.navigate('Main');
-    }
-  };
-
   const handleLogoClick = () => {
     // 홈 화면에서 로고 클릭 시 스크롤을 맨 위로 이동하거나 새로고침
     // 이미 홈이므로 추가 동작 없음
@@ -96,7 +87,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <AppLayout onMenuClick={handleMenuClick} onLogoClick={handleLogoClick}>
+    <AppLayout onLogoClick={handleLogoClick}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* 환영 메시지 */}
         <View style={styles.welcomeSection}>
